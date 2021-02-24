@@ -1,5 +1,21 @@
 html, body {
     height: 100%;
     width: auto;
+
     font-family: 'Roboto', sans-serif;
+
+    background-color: #323232;
+    color: white;
+}
+
+a { color: white; }
+
+.flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#page-title {
+    font-size: 2.5em;
+    font-weight: bold;
 }

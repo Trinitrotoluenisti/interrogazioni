@@ -1,0 +1,31 @@
+.categories {
+    font-weight: bold;
+    font-size: 1.3em;
+
+    margin-top: 3vh;
+}
+
+.list {
+    border-radius: 10px;
+
+    background-color: black;
+
+    margin: 1vh 1vh 0 0;
+    padding: 1.4vw;
+}
+
+.subject {
+    font-weight: bold;
+    font-style: italic;
+
+    margin-bottom: .5vh;
+}
+
+.reserves { font-style: italic; }
+
+
+@media screen and (min-width: 375px) and (max-width: 850px) {
+    .list {
+        padding: 2.1vw;
+    }
+}

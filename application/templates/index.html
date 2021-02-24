@@ -1,20 +1,32 @@
 {% extends "template.html" %}
 
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/index.css') }}">
+{% endblock %}
+
 
 {% block body %}
-    <h1>Interrogazioni</h1>
+    <a id="login-button" href="/login">Accedi come Admin</a>
 
-    <a id="login-button" href="/login">Modifica</a>
+    <div class="categories">Prossime interrogazioni:</div>
 
-    {% for list in lists %}
-        <div class="list">
-            <span class="list-name">{{ list['name'] }}</span>
-            
-            <div class="list-content">
-                {% for element, checked in list['elements'].items() %}
-                    <span class="list-element {% if checked %} checked {% endif %}">{{ element['name'] }}</span>
+    <!-- Container of lists -->
+    <div class="flex">
+        <!-- List -->
+
+        {% for i in range(4) %}
+            <div class="list">
+                <div class="subject">Materia</div>
+
+                <div>LoremIpsu mDolorSitA</div>
+                <div>LoremIpsu mDolorSitA</div><br>
+
+                {% for i in range(6) %}
+                    <div class="reserves">LoremIpsu mDolorSitA</div>
                 {% endfor %}
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
+
+    <div class="categories">Tutte le liste:</div>
 {% endblock %}
