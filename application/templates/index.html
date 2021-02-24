@@ -1,0 +1,20 @@
+{% extends "template.html" %}
+
+
+{% block body %}
+    <h1>Interrogazioni</h1>
+
+    <a id="login-button" href="/login">Modifica</a>
+
+    {% for list in lists %}
+        <div class="list">
+            <span class="list-name">{{ list['name'] }}</span>
+            
+            <div class="list-content">
+                {% for element, checked in list['elements'].items() %}
+                    <span class="list-element {% if checked %} checked {% endif %}">{{ element['name'] }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

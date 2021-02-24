@@ -1,0 +1,11 @@
+GET   /
+-------
+The home page with the lists and the login button.
+
+GET   /login
+------------
+The login page.
+
+POST   /login
+-------------
+The endpoint with which people log in.

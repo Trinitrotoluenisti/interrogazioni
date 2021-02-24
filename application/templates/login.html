@@ -1,0 +1,13 @@
+{% extends "template.html" %}
+
+
+{% block body %}
+    <h1>Interrogazioni</h1>
+
+    <a id="back-button" href="/">Indietro</a>
+
+    <form action="/login" method="POST">
+        <input type="password">
+        <input type="submit" value="Login">
+    </form>
+{% endblock %}
