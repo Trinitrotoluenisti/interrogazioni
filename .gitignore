@@ -2,3 +2,5 @@
 .envrc
 *.pyc
 *.swp
+application/configs.py
+application/lists.json
