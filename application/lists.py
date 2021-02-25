@@ -20,7 +20,7 @@ class Lists:
 
     def save():
         with open('application/lists.json', 'w') as f:
-            dump(Lists.lists.values(), f)
+            dump(list(Lists.lists.values()), f, indent=4)
 
     def create(name, step, order):
         if name in Lists.names.values():
