@@ -12,21 +12,27 @@
 
     <!-- Container of lists -->
     <div class="flex">
+
         <!-- List -->
-
-        {% for i in range(4) %}
+        {% for list in dashboard %}
             <div class="list">
-                <div class="subject">Materia</div>
+                <div class="subject">{{ list['name'] }}</div>
 
-                <div>LoremIpsu mDolorSitA</div>
-                <div>LoremIpsu mDolorSitA</div><br>
+                {% for element in list['first_group'] %}
+                    <div>{{ element }}</div>
+                {% endfor %}
 
-                {% for i in range(6) %}
-                    <div class="reserves">LoremIpsu mDolorSitA</div>
+                <br>
+
+                {% for element in list['second_group'] %}
+                    <div class="reserves">{{ element }}</div>
                 {% endfor %}
             </div>
         {% endfor %}
     </div>
 
     <div class="categories">Tutte le liste:</div>
+    {% for id, name in lists.items() %}
+        <a href="lists/{{ id }}">{{ name }}</a>
+    {% endfor %}
 {% endblock %}
