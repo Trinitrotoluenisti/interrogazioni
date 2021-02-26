@@ -1,5 +1,6 @@
 .direnv
 .envrc
+env
 *.pyc
 *.swp
 application/configs.py
