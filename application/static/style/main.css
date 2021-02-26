@@ -1,19 +1,20 @@
+:root {
+    --background: #262626;
+    --main: #B3001B;
+/*  --main-alt: #255C99; */
+}
+
 html, body {
-    height: 100%;
+    height: auto;
     width: auto;
 
     font-family: 'Roboto', sans-serif;
 
-    background-color: #323232;
+    background-color: var(--background);
     color: white;
 }
 
 a { color: white; }
-
-.flex {
-    display: flex;
-    flex-wrap: wrap;
-}
 
 #page-title {
     font-size: 2.5em;

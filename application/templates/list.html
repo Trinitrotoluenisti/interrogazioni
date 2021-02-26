@@ -3,24 +3,13 @@
 
 {% block body %}
     <a id="back-button" href="/">Indietro</a>
-    <a id="login-button" href="/login">Accedi come Admin</a>
 
     <h1>{{ name }}</h1>
-
-    <h2>Prossimi interrogati</h2>
-    {% for element in groups['first_group'] %}
-        <li>{{ element }}</li>
-    {% endfor %}
-
-    <h2>Riserve</h2>
-    {% for element in groups['second_group'] %}
-        <li>{{ element }}</li>
-    {% endfor %}
 
     <h2>Lista completa</h2>
     <ul>
         {% for element in order %}
-            <li> <input type='radio' disabled {% if element[1] %} checked {% endif %}> {{ element[0] }} </li>
+            <li> <input type='checkbox' disabled {% if element[1] %} checked {% endif %}> {{ element[0] }} </li>
         {% endfor %}
     </ul>
 {% endblock %}

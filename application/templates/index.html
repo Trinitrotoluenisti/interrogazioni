@@ -6,13 +6,10 @@
 
 
 {% block body %}
-    <a id="login-button" href="/login">Accedi come Admin</a>
-
     <div class="categories">Prossime interrogazioni:</div>
 
     <!-- Container of lists -->
     <div class="flex">
-
         <!-- List -->
         {% for list in dashboard %}
             <div class="list">
@@ -32,7 +29,8 @@
     </div>
 
     <div class="categories">Tutte le liste:</div>
+
     {% for id, name in lists.items() %}
-        <a href="lists/{{ id }}">{{ name }}</a>
+        <div class="link" onclick="location.href='lists/{{ id }}'">{{ name }}</div>
     {% endfor %}
 {% endblock %}

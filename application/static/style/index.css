@@ -5,10 +5,15 @@
     margin-top: 3vh;
 }
 
+.flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .list {
     border-radius: 10px;
 
-    background-color: black;
+    background-color: var(--main);
 
     margin: 1vh 1vh 0 0;
     padding: 1.4vw;
@@ -19,9 +24,19 @@
     font-style: italic;
 
     margin-bottom: .5vh;
+
+    color: white;
 }
 
 .reserves { font-style: italic; }
+
+.link { text-decoration: underline; }
+
+.link:hover {
+    text-decoration: none;
+
+    cursor: pointer;
+}
 
 
 @media screen and (min-width: 375px) and (max-width: 850px) {

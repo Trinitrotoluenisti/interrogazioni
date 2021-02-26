@@ -12,12 +12,23 @@
         <!-- CSS -->
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{{ url_for('static', filename='style/main.css') }}">
+        <link rel="icon" type="image/png" href="https://image.flaticon.com/icons/png/512/150/150360.png">
         {% block css %}{% endblock %}
     </head>
 
     <body>
         <div id="page-title">Interrogazioni</div>
 
+        {% if admin %}
+            <a href="/logout">Esci</a>
+        {% else %}
+            <a href="/login">Accedi come Admin</a>
+        {% endif %}
+
         {% block body %}{% endblock %}
     </body>
+
+    {% if error|default('',false) %}
+        <script>alert("{{ error }}");</script>
+    {% endif %}
 </html>

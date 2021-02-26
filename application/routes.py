@@ -10,7 +10,7 @@ admin = {'password': ADMIN_PASSWORD, 'token': ''}
 
 @app.route('/')
 def index(error=''):
-    isadmin = request.cookies.get('token') == admin['token']
+    isadmin = request.cookies.get('token') == admin['token'] and admin['token']
 
     dashboard = Lists.get_dashboard()
     lists = Lists.get_all()
