@@ -4,11 +4,10 @@
 {% block body %}
     <a id="back-button" href="/">Indietro</a>
 
-    <h1>{{ name }}</h1>
+    <h1>{{ list['name'] }}</h1>
 
-    <h2>Lista completa</h2>
     <ul>
-        {% for element in order %}
+        {% for element in list['order'] %}
             <li> <input type='checkbox' disabled {% if element[1] %} checked {% endif %}> {{ element[0] }} </li>
         {% endfor %}
     </ul>

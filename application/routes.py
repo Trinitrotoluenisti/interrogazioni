@@ -1,8 +1,8 @@
 from flask import render_template, request, make_response, redirect
 from uuid import uuid4
 
-from . import app, Lists
-from .configs import ADMIN_PASSWORD
+from . import app, Data
+from .admin_password import ADMIN_PASSWORD
 
 
 admin = {'password': ADMIN_PASSWORD, 'token': ''}
@@ -10,10 +10,9 @@ admin = {'password': ADMIN_PASSWORD, 'token': ''}
 
 @app.route('/')
 def index(error=''):
+    lists = Data.get_lists()
+    dashboard = Data.get_lists_dashboard()
     isadmin = request.cookies.get('token') == admin['token'] and admin['token']
-
-    dashboard = Lists.get_dashboard()
-    lists = Lists.get_all()
 
     return render_template('index.html', dashboard=dashboard, lists=lists, error=error, admin=isadmin)
 
@@ -41,15 +40,9 @@ def logout():
     else:
         return index(error='You are not logged in'), 401
 
-@app.route('/lists/<int:list_id>')
-def list_page(list_id):
-    if (l := Lists.get(list_id)):
-        groups = [l for l in Lists.get_dashboard() if l['id'] == list_id]
-        if groups:
-            groups = groups[0]
-        else:
-            groups = None
-
-        return render_template('list.html', name=l['name'], order=l['order'], groups=groups)
+@app.route('/lists/<int:lid>')
+def list_page(lid):
+    if (l := Data.get_list(lid)):
+        return render_template('list.html', list=l)
     else:
         return None, 404

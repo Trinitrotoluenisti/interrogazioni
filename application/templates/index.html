@@ -30,7 +30,7 @@
 
     <div class="categories">Tutte le liste:</div>
 
-    {% for id, name in lists.items() %}
-        <div class="link" onclick="location.href='lists/{{ id }}'">{{ name }}</div>
+    {% for list in lists %}
+        <div class="link" onclick="location.href='lists/{{ list['id'] }}'">{{ list['name'] }}</div>
     {% endfor %}
 {% endblock %}

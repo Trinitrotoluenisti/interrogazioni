@@ -1,8 +1,8 @@
 from flask import Flask
-from .lists import Lists
+from .data import Data
 
 
 app = Flask(__name__)
-Lists.load()
+Data.load()
 
 from .routes import *

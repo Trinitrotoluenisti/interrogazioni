@@ -3,5 +3,5 @@
 env
 *.pyc
 *.swp
-application/configs.py
-application/lists.json
+application/admin_password.py
+application/data.json
