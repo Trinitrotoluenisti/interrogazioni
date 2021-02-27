@@ -1,0 +1,10 @@
+{% extends "template.html" %}
+
+
+{% block body %}
+    <h1>{{ prompt }}</h1>
+
+    {% for o in options %}
+        <div class="link" onclick="location+='/{{ o['id'] }}'">{{ o['name'] }}</div>
+    {% endfor %}
+{% endblock %}

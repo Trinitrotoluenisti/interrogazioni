@@ -10,16 +10,14 @@ admin = {'password': ADMIN_PASSWORD, 'token': ''}
 
 @app.route('/')
 def index(error=''):
-    lists = Data.get_lists()
     dashboard = Data.get_lists_dashboard()
-    isadmin = request.cookies.get('token') == admin['token'] and admin['token']
 
-    return render_template('index.html', dashboard=dashboard, lists=lists, error=error, admin=isadmin)
+    return render_template('index.html', dashboard=dashboard, index=True, error=error)
 
 @app.route('/login', methods=['GET', 'POST'])
-def login():
+def login(error=''):
     if request.method == 'GET':
-        return render_template('login.html')
+        return render_template('login.html', error=error)
 
     password = request.form.get('password')
     if password == admin['password']:
@@ -28,7 +26,7 @@ def login():
         r.set_cookie('token', admin['token'])
         return r
     else:
-        return index(error='Incorrect password'), 401
+        return login(error='Incorrect password'), 401
 
 @app.route('/logout')
 def logout():
@@ -40,9 +38,28 @@ def logout():
     else:
         return index(error='You are not logged in'), 401
 
+@app.route('/lists')
+@app.route('/elements')
+def show_options():
+    if str(request.url_rule) == '/lists':
+        prompt = "Seleziona una lista"
+        options = Data.get_lists()
+    else:
+        prompt = "Seleziona uno studente"
+        options = Data.get_elements()
+
+    return render_template('options.html', prompt=prompt, options=options)
+
 @app.route('/lists/<int:lid>')
 def list_page(lid):
     if (l := Data.get_list(lid)):
         return render_template('list.html', list=l)
+    else:
+        return None, 404
+
+@app.route('/elements/<int:eid>')
+def element_page(eid):
+    if (e := Data.get_element(eid)):
+        return render_template('element.html', element=e)
     else:
         return None, 404

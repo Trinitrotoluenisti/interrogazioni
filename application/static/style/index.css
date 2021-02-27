@@ -30,14 +30,6 @@
 
 .reserves { font-style: italic; }
 
-.link { text-decoration: underline; }
-
-.link:hover {
-    text-decoration: none;
-
-    cursor: pointer;
-}
-
 
 @media screen and (min-width: 375px) and (max-width: 850px) {
     .list {

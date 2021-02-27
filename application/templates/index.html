@@ -28,9 +28,6 @@
         {% endfor %}
     </div>
 
-    <div class="categories">Tutte le liste:</div>
-
-    {% for list in lists %}
-        <div class="link" onclick="location.href='lists/{{ list['id'] }}'">{{ list['name'] }}</div>
-    {% endfor %}
+    <div class="link" onclick="location='lists';">Vedi interrogazioni per lista</div>
+    <div class="link" onclick="location='elements';">Vedi interrogazioni per studente</div>
 {% endblock %}
