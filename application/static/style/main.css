@@ -19,9 +19,19 @@ html, body {
     font-weight: bold;
 }
 
-.link { text-decoration: underline; }
+a {
+    display: block;
 
-.link:hover {
+    width: max-content;
+
+    color: white;
+
+    text-decoration: underline;
+
+    margin-top: 1vh;
+}
+
+a:hover {
     text-decoration: none;
 
     cursor: pointer;

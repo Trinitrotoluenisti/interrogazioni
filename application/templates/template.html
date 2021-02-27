@@ -17,15 +17,14 @@
 
         <!-- JS -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        {% block js %}{% endblock %}
     </head>
 
     <body>
         <div id="page-title">Interrogazioni</div>
 
-        <div class="link" id="login-button"></div>
-
         {% if not index|default(false,false) %}
-            <div class="link" id="back-button" onclick="location='..';">Indietro</div>
+            <a id="back-button" href="javascript:history.back()">Indietro</a>
         {% endif %}
 
         {% block body %}{% endblock %}
@@ -34,16 +33,4 @@
     {% if error|default('',false) %}
         <script>alert("{{ error }}");</script>
     {% endif %}
-
-    <script>
-        let loginButton = $("#login-button");
-
-        if (document.cookie.length > 6) {
-            loginButton.text("Esci");
-            loginButton.click(function () { location = '/logout'; });
-        } else {
-            loginButton.text("Accedi come admin");
-            loginButton.click(function () { location = '/login'; });
-        }
-    </script>
 </html>

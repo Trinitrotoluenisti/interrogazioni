@@ -1,12 +1,20 @@
 {% extends "template.html" %}
 
 
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/element.css') }}">
+{% endblock %}
+
 {% block body %}
     <h1>{{ element['name'] }}</h1>
 
     <ul>
         {% for l in dashboard['first'] %}
-            <li>Ci sono <b>{{ l[0] }}</b> persone davanti a te in <b>{{ l[1] }}</b> <i>(Prossimo interrogato)</i></li>
+            {% if l[0] == 0 %}
+                <li>Sei il primo nella lista in <b>{{ l[1] }}</b> <i>(Prossimo interrogato)</i></li>
+            {% else %}
+                <li>Ci sono <b>{{ l[0] }}</b> persone davanti a te in <b>{{ l[1] }}</b> <i>(Prossimo interrogato)</i></li>
+            {% endif %}
         {% endfor %}
 
         {% for l in dashboard['second'] %}

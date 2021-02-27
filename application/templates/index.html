@@ -4,8 +4,27 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style/index.css') }}">
 {% endblock %}
 
+{% block js %}
+    <script>
+        $(function () {
+            let loginButton = $("#login-button");
+
+            if (document.cookie.length > 6) {
+                loginButton.text("Esci");
+                loginButton.attr("href", "/logout");
+            } else {
+                loginButton.text("Accedi come admin");
+                loginButton.attr("href", "/login");
+            }
+        });
+    </script>
+{% endblock %}
+
 
 {% block body %}
+    <a href="lists">Vedi interrogazioni per lista</a>
+    <a href="elements">Vedi interrogazioni per studente</a>
+
     <div class="categories">Prossime interrogazioni:</div>
 
     <!-- Container of lists -->
@@ -28,6 +47,7 @@
         {% endfor %}
     </div>
 
-    <div class="link" onclick="location='lists';">Vedi interrogazioni per lista</div>
-    <div class="link" onclick="location='elements';">Vedi interrogazioni per studente</div>
+    <br>
+
+    <a id="login-button"></a>
 {% endblock %}
