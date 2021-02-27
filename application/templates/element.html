@@ -5,13 +5,22 @@
     <h1>{{ element['name'] }}</h1>
 
     <ul>
-        <li>Ci sono <b>2</b> persone davanti a te in <b>Educazione Civica (TLC)</b> <i>(Prossimo interrogato)</i></li>
-        <li>Ci sono <b>6</b> persone davanti a te in <b>Telecomunicazioni</b> <i>(Riserva)</i></li>
-        <li>Ci sono <b>8</b> persone davanti a te in <b>Inglese</b></li>
+        {% for l in dashboard['first'] %}
+            <li>Ci sono <b>{{ l[0] }}</b> persone davanti a te in <b>{{ l[1] }}</b> <i>(Prossimo interrogato)</i></li>
+        {% endfor %}
+
+        {% for l in dashboard['second'] %}
+            <li>Ci sono <b>{{ l[0] }}</b> persone davanti a te in <b>{{ l[1] }}</b> <i>(Riserva)</i></li>
+        {% endfor %}
+
+        {% for l in dashboard['other'] %}
+            <li>Ci sono <b>{{ l[0] }}</b> persone davanti a te in <b>{{ l[1] }}</b></li>
+        {% endfor %}
 
         <br>
 
-        <li>Hai già fatto l'interrogazione di <b>TPS</b></li>
-        <li>Hai già fatto l'interrogazione di <b>Informatica</b></li>
+        {% for l in dashboard['done'] %}
+            <li>Hai già fatto l'interrogazione di <b>{{ l[1] }}</b></li>
+        {% endfor %}
     </ul>
 {% endblock %}

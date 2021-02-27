@@ -16,7 +16,7 @@ def index(error=''):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login(error=''):
-    if request.method == 'GET':
+    if request.method == 'GET' or error:
         return render_template('login.html', error=error)
 
     password = request.form.get('password')
@@ -41,14 +41,16 @@ def logout():
 @app.route('/lists')
 @app.route('/elements')
 def show_options():
-    if str(request.url_rule) == '/lists':
+    path = str(request.url_rule)[1:]
+
+    if path == 'lists':
         prompt = "Seleziona una lista"
         options = Data.get_lists()
     else:
         prompt = "Seleziona uno studente"
         options = Data.get_elements()
 
-    return render_template('options.html', prompt=prompt, options=options)
+    return render_template('options.html', prompt=prompt, options=options, path=path)
 
 @app.route('/lists/<int:lid>')
 def list_page(lid):
@@ -60,6 +62,7 @@ def list_page(lid):
 @app.route('/elements/<int:eid>')
 def element_page(eid):
     if (e := Data.get_element(eid)):
-        return render_template('element.html', element=e)
+        dashboard = Data.get_element_dashboard(eid)
+        return render_template('element.html', element=e, dashboard=dashboard)
     else:
         return None, 404

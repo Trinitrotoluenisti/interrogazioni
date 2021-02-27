@@ -35,21 +35,45 @@ class Data:
             if e['name'] == name:
                 return dict(e)
 
+    def get_element_dashboard(eid):
+        if not Data.get_element(eid):
+            return None
+
+        dashboard = {'first': [], 'second': [], 'other': [], 'done': []}
+
+        for l in Data.get_lists(False):
+            elements = [o[0] for o in l['order'] if not o[1]]
+
+            if not eid in elements:
+                dashboard['done'].append([0, l['name']])
+            elif (i := elements.index(eid)) < l['step']:
+                dashboard['first'].append([i, l['name']])
+            elif i < 2*l['step']+1:
+                dashboard['second'].append([i, l['name']])
+            else:
+                dashboard['other'].append([i, l['name']])
+
+        dashboard['first'].sort()
+        dashboard['second'].sort()
+        dashboard['other'].sort()
+        dashboard['done'].sort()
+
+        return dashboard
 
     # Lists
 
-    def get_lists():
+    def get_lists(pretty=True):
         lists = []
 
         for l in Data.lists.keys():
-            lists.append(Data.get_list(l))
+            lists.append(Data.get_list(l, pretty))
 
         return lists
 
-    def get_list(lid):
+    def get_list(lid, pretty=True):
         l = Data.lists.get(str(lid)).copy()
 
-        if l:
+        if l and pretty:
             l['order'] = [(Data.get_element(e[0])['name'], e[1]) for e in l['order']]
 
         return l
