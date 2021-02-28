@@ -1,0 +1,22 @@
+{% extends "template.html" %}
+
+
+{% block body %}
+    <br>
+
+    <form action="/lists/new" method="POST">
+        <label for="name">Nome della lista</label>
+        <input type="text" name="name" value="{{ name|default('', false) }}" required>
+
+        <label for="step">Interrogati per volta</label>
+        <input type="number" name="step" min="1" value="{{ step|default(3, false) }}" required>
+
+        <label for="random">Genera casualmente</label>
+        <input id="checkbox" type="checkbox" name="random" {{ 'checked' if random|default(true, false) }}>
+
+        <label for="elements">Studenti</label>
+        <textarea id="textarea" name="elements">{{ elements|default('', false) }}</textarea>
+
+        <input type="submit" value="Crea">
+    </form>
+{% endblock %}

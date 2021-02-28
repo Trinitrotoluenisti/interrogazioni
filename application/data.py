@@ -19,7 +19,7 @@ class Data:
         data = {'lists': Data.lists, 'elements': Data.elements}
 
         with open('application/data.json', 'w') as f:
-            dump(Data, f, indent=4)
+            dump(data, f, indent=4)
 
 
     # Elements
@@ -85,38 +85,38 @@ class Data:
 
     def create_list(name, step, order):
         if Data.get_list_by_name(name):
-            raise ValueError('Name already used')
+            raise ValueError('Nome già usato')
         elif step > len(order) or step < 1:
-            raise ValueError('Invalid step')
+            raise ValueError('Numero di interrogati non valido')
         elif len(order) < 2:
-            raise ValueError('Invalid order')
+            raise ValueError('Elenco non valido')
         elif any([not Data.get_element_by_name(e) for e in order]):
-            raise ValueError('Invalid elements in order')
+            raise ValueError('Alcuni studenti non esistono')
 
-        lid = max(Data.lists.keys()) + 1
-        order = [(Data.get_element_by_name(o)['id'], False) for o in order]
+        lid = str(max(map(int, Data.lists.keys())) + 1)
+        order = [[Data.get_element_by_name(o)['id'], False] for o in order]
         Data.lists[lid] = {"name": name, "id": lid, "step": step, "order": order}
-        Data.Save()
+        Data.save()
 
     def generate_list(name, step):
         order = [e['name'] for e in Data.get_elements()]
         shuffle(order)
-        Data.create(name, step, order)
+        Data.create_list(name, step, order)
 
     def delete_list(lid):
         if not Data.get_list(lid):
-            raise ValueError("List doesnt't exist")
+            raise ValueError('La lista specificata non esiste')
 
         del Data.lists[lid]
         Data.save()
 
     def update_list(ld, elements):
         if not (l := Data.get_list(lid)):
-            raise ValueError("List doesn't exist")
+            raise ValueError('La lista specificata non esiste')
         elif not all(Data.get_element(eid) for eid in elements):
-            raise ValueError("Some elements don't exist")
+            raise ValueError('Alcuni studenti non esistono')
         elif not all(e[1] == False for e in l['order'] if e[0] in elements):
-            raise ValueError("Some elements are already checked")
+            raise ValueError('Alcuni studenti sono già stati interrogati')
 
         for eid in elements:
             Data.lists[lid]['order'][eid][1] = True

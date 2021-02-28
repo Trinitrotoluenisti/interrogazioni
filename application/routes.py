@@ -1,4 +1,5 @@
 from flask import render_template, request, make_response, redirect
+from functools import wraps
 from uuid import uuid4
 
 from . import app, Data
@@ -8,16 +9,25 @@ from .admin_password import ADMIN_PASSWORD
 admin = {'password': ADMIN_PASSWORD, 'token': ''}
 
 
-@app.route('/')
-def index(error=''):
-    dashboard = Data.get_lists_dashboard()
+def check_admin(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        is_admin = (request.cookies.get('token') == admin['token']) and admin['token']
+        return func(*args, **kwargs, is_admin=is_admin)
+    
+    return wrapper
 
-    return render_template('index.html', dashboard=dashboard, index=True, error=error)
+
+@app.route('/')
+@check_admin
+def index_page(is_admin=False):
+    dashboard = Data.get_lists_dashboard()
+    return render_template('index.html', dashboard=dashboard, index=True, is_admin=is_admin)
 
 @app.route('/login', methods=['GET', 'POST'])
-def login(error=''):
-    if request.method == 'GET' or error:
-        return render_template('login.html', error=error)
+def login_page():
+    if request.method == 'GET':
+        return render_template('login.html')
 
     password = request.form.get('password')
     if password == admin['password']:
@@ -26,21 +36,22 @@ def login(error=''):
         r.set_cookie('token', admin['token'])
         return r
     else:
-        return login(error='Incorrect password'), 401
+        return render_template('login.html', error='Incorrect password'), 401
 
 @app.route('/logout')
-def logout():
-    if request.cookies.get('token') == admin['token']:
+@check_admin
+def logout_page(is_admin=False):
+    r = make_response(redirect('/'))
+
+    if is_admin:
         admin['token'] = ''
-        r = make_response(redirect('/'))
         r.set_cookie('token', '')
-        return r
-    else:
-        return index(error='You are not logged in'), 401
+
+    return r
 
 @app.route('/lists')
 @app.route('/elements')
-def show_options():
+def options_page():
     path = str(request.url_rule)[1:]
 
     if path == 'lists':
@@ -66,3 +77,30 @@ def element_page(eid):
         return render_template('element.html', element=e, dashboard=dashboard)
     else:
         return None, 404
+
+@app.route('/lists/new', methods=['GET', 'POST'])
+@check_admin
+def new_list_page(is_admin=False):
+    if not is_admin:
+        return redirect('/'), 401
+    elif request.method == 'GET':
+        return render_template('create_list.html')
+
+    data = dict(request.form)
+
+    if not all([f in data for f in ['name', 'step', 'elements']]):
+        return render_template('create_list.html', error='Dati insufficienti', **data)
+
+    name = data['name']
+    step = int(data['step'])
+    elements = data['elements'].split('\r\n')
+    
+    try:
+        if 'random' in data:
+            Data.generate_list(name, step)
+        else:
+            Data.create_list(name, step, elements)
+    except ValueError as e:
+        return render_template('create_list.html', error=str(e), **data, random='random' in data)
+
+    return redirect('/')

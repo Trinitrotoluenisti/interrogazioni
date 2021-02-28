@@ -4,22 +4,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style/index.css') }}">
 {% endblock %}
 
-{% block js %}
-    <script>
-        $(function () {
-            let loginButton = $("#login-button");
-
-            if (document.cookie.length > 6) {
-                loginButton.text("Esci");
-                loginButton.attr("href", "/logout");
-            } else {
-                loginButton.text("Accedi come admin");
-                loginButton.attr("href", "/login");
-            }
-        });
-    </script>
-{% endblock %}
-
 
 {% block body %}
     <a href="lists">Vedi interrogazioni per lista</a>
@@ -49,5 +33,10 @@
 
     <br>
 
-    <a id="login-button"></a>
+    {% if is_admin %}
+        <a href='/logout' id="login-button">Esci</a>
+        <a href='/lists/new'>Crea una nuova lista</a>
+    {% else %}
+        <a href='/login' id="login-button">Accedi come admin</a>
+    {% endif %}
 {% endblock %}
