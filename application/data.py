@@ -41,8 +41,8 @@ class Data:
 
         dashboard = {'first': [], 'second': [], 'other': [], 'done': []}
 
-        for l in Data.get_lists(False):
-            elements = [o[0] for o in l['order'] if not o[1]]
+        for l in Data.get_lists():
+            elements = [o['id'] for o in l['order'] if not o['checked']]
 
             if not eid in elements:
                 dashboard['done'].append([0, l['name']])
@@ -62,21 +62,11 @@ class Data:
 
     # Lists
 
-    def get_lists(pretty=True):
-        lists = []
+    def get_lists():
+        return list(Data.lists.values())
 
-        for l in Data.lists.keys():
-            lists.append(Data.get_list(l, pretty))
-
-        return lists
-
-    def get_list(lid, pretty=True):
-        l = Data.lists.get(str(lid)).copy()
-
-        if l and pretty:
-            l['order'] = [(Data.get_element(e[0])['name'], e[1]) for e in l['order']]
-
-        return l
+    def get_list(lid):
+        return Data.lists.get(str(lid)).copy()
 
     def get_list_by_name(name):
         for lid, l in Data.lists.items():
@@ -94,7 +84,7 @@ class Data:
             raise ValueError('Alcuni studenti non esistono')
 
         lid = str(max(map(int, Data.lists.keys())) + 1)
-        order = [[Data.get_element_by_name(o)['id'], False] for o in order]
+        order = [{'name': o, 'id': Data.get_element_by_name(o)['id'], 'checked': False} for o in order]
         Data.lists[lid] = {"name": name, "id": lid, "step": step, "order": order}
         Data.save()
 
@@ -110,25 +100,29 @@ class Data:
         del Data.lists[lid]
         Data.save()
 
-    def update_list(ld, elements):
-        if not (l := Data.get_list(lid)):
-            raise ValueError('La lista specificata non esiste')
-        elif not all(Data.get_element(eid) for eid in elements):
-            raise ValueError('Alcuni studenti non esistono')
-        elif not all(e[1] == False for e in l['order'] if e[0] in elements):
-            raise ValueError('Alcuni studenti sono già stati interrogati')
+    def update_list(lid, eid):
+        l = Data.get_list(lid)
 
-        for eid in elements:
-            Data.lists[lid]['order'][eid][1] = True
+        if not l:
+            raise ValueError('La lista specificata non esiste')
+
+        for oid, o in enumerate(l['order']):
+            if o['id'] == eid:
+                if o['checked']:
+                    raise ValueError('Lo studente è già stato interrogato')
+                else:              
+                    Data.lists[str(lid)]['order'][oid]['checked'] = True
+                    Data.save()
+                    return
         
-        Data.save()
+        raise ValueError('Lo studente selezionato non è nella lista')
 
     def get_lists_dashboard():
         dashboard = []
         
         for l in Data.get_lists():
             step = l["step"]
-            elements = [e[0] for e in l["order"] if not e[1]]
+            elements = [e['name'] for e in l["order"] if not e['checked']]
 
             if elements:
                 l = {'name': l['name'],

@@ -64,9 +64,10 @@ def options_page():
     return render_template('options.html', prompt=prompt, options=options, path=path)
 
 @app.route('/lists/<int:lid>')
-def list_page(lid):
+@check_admin
+def list_page(lid, is_admin=False):
     if (l := Data.get_list(lid)):
-        return render_template('list.html', list=l)
+        return render_template('list.html', list=l, is_admin=is_admin)
     else:
         return None, 404
 
@@ -104,3 +105,16 @@ def new_list_page(is_admin=False):
         return render_template('create_list.html', error=str(e), **data, random='random' in data)
 
     return redirect('/')
+
+@app.route('/lists/<int:lid>/check/<int:eid>')
+@check_admin
+def update_list_page(lid, eid, is_admin=False):
+    if not is_admin:
+        return redirect(f'/lists/{lid}'), 401
+
+    try:
+        Data.update_list(lid, eid)
+    except ValueError as e:
+        return render_template('list.html', list=Data.get_list(lid), is_admin=is_admin, error=str(e))
+
+    return redirect(f'/lists/{lid}')
