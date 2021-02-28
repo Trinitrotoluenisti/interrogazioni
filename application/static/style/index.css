@@ -16,7 +16,7 @@
     background-color: var(--main);
 
     margin: 1vh 1vh 0 0;
-    padding: 1.4vw;
+    padding: 1vw;
 }
 
 .subject {
@@ -31,8 +31,8 @@
 .reserves { font-style: italic; }
 
 
-@media screen and (min-width: 375px) and (max-width: 850px) {
+@media only screen and (max-width: 850px) {
     .list {
-        padding: 2.1vw;
+        padding: 2vw;
     }
 }

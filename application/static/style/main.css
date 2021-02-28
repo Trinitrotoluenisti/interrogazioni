@@ -36,3 +36,11 @@ a:hover {
 
     cursor: pointer;
 }
+
+input[type=text] {
+    margin-bottom: 2vh;
+}
+
+input[type=submit] {
+    margin-top: 2vh;
+}

@@ -89,20 +89,13 @@ def new_list_page(is_admin=False):
 
     data = dict(request.form)
 
-    if not all([f in data for f in ['name', 'step', 'elements']]):
+    if not 'name' in data or not 'step' in data:
         return render_template('create_list.html', error='Dati insufficienti', **data)
-
-    name = data['name']
-    step = int(data['step'])
-    elements = data['elements'].split('\r\n')
     
     try:
-        if 'random' in data:
-            Data.generate_list(name, step)
-        else:
-            Data.create_list(name, step, elements)
+        Data.generate_list(data['name'], int(data['step']))
     except ValueError as e:
-        return render_template('create_list.html', error=str(e), **data, random='random' in data)
+        return render_template('create_list.html', error=str(e), **data)
 
     return redirect('/')
 

@@ -73,25 +73,21 @@ class Data:
             if l['name'] == name:
                 return Data.get_list(lid)
 
-    def create_list(name, step, order):
+    def generate_list(name, step):
+        order = Data.get_elements()
+        shuffle(order)
+
         if Data.get_list_by_name(name):
             raise ValueError('Nome già usato')
         elif step > len(order) or step < 1:
             raise ValueError('Numero di interrogati non valido')
-        elif len(order) < 2:
-            raise ValueError('Elenco non valido')
-        elif any([not Data.get_element_by_name(e) for e in order]):
-            raise ValueError('Alcuni studenti non esistono')
 
         lid = str(max(map(int, Data.lists.keys())) + 1)
-        order = [{'name': o, 'id': Data.get_element_by_name(o)['id'], 'checked': False} for o in order]
+
+        for o in order: o.update(checked=False)
+
         Data.lists[lid] = {"name": name, "id": lid, "step": step, "order": order}
         Data.save()
-
-    def generate_list(name, step):
-        order = [e['name'] for e in Data.get_elements()]
-        shuffle(order)
-        Data.create_list(name, step, order)
 
     def delete_list(lid):
         if not Data.get_list(lid):
