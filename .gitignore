@@ -1,7 +1,13 @@
+application/admin_password.py
+application/data.json
+
 .direnv
 .envrc
 env
+
 *.pyc
+**__pycache**
+
 *.swp
-application/admin_password.py
-application/data.json
+
+start.sh
