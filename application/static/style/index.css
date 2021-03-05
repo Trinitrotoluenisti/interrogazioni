@@ -21,7 +21,6 @@
 
 .subject {
     font-weight: bold;
-    font-style: italic;
 
     margin-bottom: .5vh;
 
@@ -31,8 +30,12 @@
 .reserves { font-style: italic; }
 
 
-@media only screen and (max-width: 850px) {
+@media only screen and (max-width: 800px) {
     .list {
+        flex: 19vh !important;
+        flex: 1;
+
+        margin: 1vh;
         padding: 2vw;
     }
 }
