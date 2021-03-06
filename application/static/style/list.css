@@ -1,0 +1,36 @@
+ul { padding: 0; }
+
+li {
+    display: flex;
+
+    width: 38vmax;
+
+    align-items: center;
+}
+
+.buttons { margin-left: auto; }
+
+button {
+    padding: 8px;
+
+    line-height: 0;
+    font-weight: bold;
+
+    border: .1px solid white;
+    border-radius: 3px;
+
+    background-color: white;
+    color: var(--background);
+
+    font-weight: bold;
+
+    transition-duration: .2s;
+    -webkit-transition-duration: .2s; /* Chrome, Opera, Safari */
+
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--background);
+    color: white;
+}

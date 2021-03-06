@@ -1,5 +1,9 @@
 {% extends "template.html" %}
 
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/list.css') }}">
+{% endblock %}
+
 
 {% block body %}
     <h1>{{ list['name'] }}</h1>
@@ -7,11 +11,13 @@
     <ul>
         {% for element in list['order'] %}
             <li>
-                <input type='checkbox' disabled {{ 'checked' if element['checked'] }}> {{ element['name'] }}
+                <input type='checkbox' disabled {{ 'checked' if element['checked'] }}>
+                <span> {{ element['name'] }}</span>
 
-                {% if is_admin %}
-                    <a href="/lists/{{ list['id'] }}/check/{{ element['id'] }}">Segna come interrogato</a>
-                {% endif %}
+                <div class="buttons">
+                    <button>&#8593;</button>
+                    <button>&#8595;</button>
+                </div>
             </li>
         {% endfor %}
     </ul>

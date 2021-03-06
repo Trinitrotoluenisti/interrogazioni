@@ -1,8 +1,8 @@
 .categories {
+    margin-top: 3vh;
+
     font-weight: bold;
     font-size: 1.3em;
-
-    margin-top: 3vh;
 }
 
 .flex {
@@ -11,12 +11,12 @@
 }
 
 .list {
+    margin: 1vh 1vh 0 0;
+    padding: 1vw;
+
     border-radius: 10px;
 
     background-color: var(--main);
-
-    margin: 1vh 1vh 0 0;
-    padding: 1vw;
 }
 
 .subject {
@@ -30,12 +30,11 @@
 .reserves { font-style: italic; }
 
 
-@media only screen and (max-width: 800px) {
+@media screen and (max-width: 800px) {
     .list {
-        flex: 19vh !important;
-        flex: 1;
-
         margin: 1vh;
         padding: 2vw;
+
+        flex: 1 0 19vh;
     }
 }

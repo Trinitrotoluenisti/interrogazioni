@@ -1,18 +1,17 @@
 {% extends "template.html" %}
 
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/create_list.css') }}">
+{% endblock %}
 
 {% block body %}
     <br>
 
     <form action="/lists/new" method="POST">
         <label for="name">Nome della lista</label>
-        <br>
         <input type="text" name="name" value="{{ name|default('', false) }}" required>
 
-        <br>
-
         <label for="step">Interrogati per volta</label>
-        <br>
         <input type="number" name="step" min="1" value="{{ step|default(3, false) }}" required>
 
         <br>

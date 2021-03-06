@@ -23,13 +23,13 @@ html, body {
 a {
     display: block;
 
+    margin-top: 1vh;
+
     width: max-content;
 
     color: white;
 
     text-decoration: underline;
-
-    margin-top: 1vh;
 }
 
 a:hover {
@@ -38,31 +38,46 @@ a:hover {
     cursor: pointer;
 }
 
+form > input {
+    margin-bottom: 1vh;
+}
+
+label {
+    display: block;
+    margin-bottom: .5vh;
+}
+
 input[type=text], input[type=number], input[type=password] {
-    margin-top: 2vh;
-    margin-bottom: 2vh;
+    margin-top: 2vh 0;
     padding: 0.7vh;
+
     border: none;
     border-radius: 3px;
 }
 
 input[type=submit] {
-    margin-top: 2vh;
-    background-color: white;
-    border: 2px solid white;
-    color: var(--background);
+    margin: 10px 0;
     padding: 8px 16px;
+
+    display: inline-block;
+
+    border: 2px solid white;
+    border-radius: 3px;
+
+    background-color: white;
+    color: var(--background);
+
     text-align: center;
     text-decoration: none;
     font-weight: bold;
-    display: inline-block;
-    margin: 10px 0px;
-    -webkit-transition-duration: 0.2s; /* Safari */
-    transition-duration: 0.2s;
+
+    transition-duration: .2s;
+    -webkit-transition-duration: .2s; /* Chrome, Opera, Safari */
+
     cursor: pointer;
-    border-radius: 3px;
 }
 
 input[type=submit]:hover {
-    border: 2px solid var(--background);
+    background-color: var(--background);
+    color: white;
 }
