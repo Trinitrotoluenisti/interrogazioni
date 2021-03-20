@@ -4,27 +4,43 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style/list.css') }}">
 {% endblock %}
 
-{% block js %}
-    <script src="{{ url_for('static', filename='script/button.js') }}"></script>
-{% endblock %}
+{% if is_admin %}
+    {% block js %}
+        <script src="{{ url_for('static', filename='script/button.js') }}"></script>
+    {% endblock %}
+{% endif %}
 
 {% block body %}
     <h1>{{ list['name'] }}</h1>
-    <button onclick="buttonClick();" class="show">Modifica</button>
-    <button onclick="buttonClick();" class="hide">Conferma</button>
 
-    <ul>
-        {% for element in list['order'] %}
-            <li>
-                <input type="checkbox" name="{{ element['id'] }}-checked" disabled {{ 'checked' if element['checked'] }}>
-                <input type="number" name="{{ element['id'] }}-order" id="{{ element['id'] }}-order" value="{{ list['order'].index(element) + 1 }}" hidden>
-                <span> {{ element['name'] }}</span>
+    {% if is_admin %}
+        <form action="/list/{{ list['id'] }}/delete" method="POST">
+            <input type="submit" class="hide" value="Elimina lista">
+        </form>
+    {% endif %}
 
-                <div class="buttons">
-                    <button class="hide">&#8593;</button>
-                    <button class="hide">&#8595;</button>
-                </div>
-            </li>
-        {% endfor %}
-    </ul>
+    <form action="/list/{{ list['id'] }}/update" method="POST">
+        {% if is_admin %}
+            <button type="button" onclick="showForm();" class="show">Modifica</button>
+            <input type="submit" class="hide" value="Conferma">
+        {% endif %}
+
+        <ul>
+            {% for element in list['order'] %}
+                <li id="{{ element['id'] }}-div">
+                    <input type="checkbox" name="{{ element['id'] }}-checked" disabled {{ 'checked' if element['checked'] }}>
+                    <span> {{ element['name'] }}</span>
+
+                    {% if is_admin %}
+                        <input type="number" name="{{ element['id'] }}-order" id="{{ element['id'] }}-order" value="{{ list['order'].index(element) + 1 }}" hidden>
+
+                        <div class="buttons">
+                            <button type="button" onclick="moveUp(this);" class="hide">&#8593;</button>
+                            <button type="button" onclick="moveDown(this);" class="hide">&#8595;</button>
+                        </div>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </form>
 {% endblock %}

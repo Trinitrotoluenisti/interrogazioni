@@ -1,0 +1,24 @@
+html {
+    height: 100%;
+    margin: 0 auto;
+}
+
+body {
+    height: 100%;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.3em;
+}
+
+#page-title { margin-bottom: 5vh; }
+
+p { text-align: center; }
+
+#back-button { display: inline; }
+
+small { font-size: 0.6em; }

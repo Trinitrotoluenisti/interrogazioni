@@ -45,13 +45,13 @@ class Data:
             elements = [o['id'] for o in l['order'] if not o['checked']]
 
             if not eid in elements:
-                dashboard['done'].append([0, l['name']])
+                dashboard['done'].append([0, l['name'], l['id']])
             elif (i := elements.index(eid)) < l['step']:
-                dashboard['first'].append([i, l['name']])
+                dashboard['first'].append([i, l['name'], l['id']])
             elif i < 2*l['step']+1:
-                dashboard['second'].append([i, l['name']])
+                dashboard['second'].append([i, l['name'], l['id']])
             else:
-                dashboard['other'].append([i, l['name']])
+                dashboard['other'].append([i, l['name'], l['id']])
 
         dashboard['first'].sort()
         dashboard['second'].sort()
@@ -84,7 +84,8 @@ class Data:
 
         lid = str(max(map(int, Data.lists.keys())) + 1)
 
-        for o in order: o.update(checked=False)
+        for o in order:
+            o.update(checked=False)
 
         Data.lists[lid] = {"name": name, "id": lid, "step": step, "order": order}
         Data.save()
@@ -96,22 +97,38 @@ class Data:
         del Data.lists[lid]
         Data.save()
 
-    def update_list(lid, eid):
+    def toggle_list(lid, eids):
         l = Data.get_list(lid)
-
         if not l:
             raise ValueError('La lista specificata non esiste')
 
+        eids = list(map(str, eids))
+        oids = [o['id'] for o in l['order']]
+        if not all([eid in oids for eid in eids]):
+            raise ValueError('Uno o più studenti non sono in lista')
+
         for oid, o in enumerate(l['order']):
-            if o['id'] == eid:
-                if o['checked']:
-                    raise ValueError('Lo studente è già stato interrogato')
-                else:              
-                    Data.lists[str(lid)]['order'][oid]['checked'] = True
-                    Data.save()
-                    return
-        
-        raise ValueError('Lo studente selezionato non è nella lista')
+            if o['id'] in eids:
+                Data.lists[str(lid)]['order'][oid]['checked'] = int(not o['checked'])
+                Data.save()
+
+    def reorder_list(lid, eids):
+        l = Data.get_list(lid)
+        if not l:
+            raise ValueError('La lista specificata non esiste')
+
+        eids = list(map(str, eids))
+        if set(eids) != {e['id'] for e in l['order']} or len(eids) != len(l['order']):
+            raise ValueError('Nel nuovo ordine mancano studenti o ce ne sono di nuovi')
+
+        new_order = []
+        old_order = {e['id']: e for e in l['order']}
+
+        for eid in eids:
+            new_order.append(old_order[eid])
+
+        Data.lists[str(lid)]['order'] = new_order
+        Data.save()
 
     def get_lists_dashboard():
         dashboard = []

@@ -36,7 +36,7 @@ def login_page():
         r.set_cookie('token', admin['token'])
         return r
     else:
-        return render_template('login.html', error='Incorrect password'), 401
+        return render_template('login.html', error='Credenziali invalide'), 401
 
 @app.route('/logout')
 @check_admin
@@ -111,3 +111,7 @@ def update_list_page(lid, eid, is_admin=False):
         return render_template('list.html', list=Data.get_list(lid), is_admin=is_admin, error=str(e))
 
     return redirect(f'/lists/{lid}')
+
+@app.errorhandler(404)
+def handle_404(e):
+    return render_template('error.html')

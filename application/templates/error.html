@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Interrogazioni</title>
+
+        <!-- Meta -->
+        <meta lang="it">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- CSS -->
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style/main.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style/error.css') }}">
+        <link rel="icon" type="image/png" href="https://image.flaticon.com/icons/png/512/150/150360.png">
+    </head>
+
+    <body>
+        <div id="page-title">Oh no!</div>
+
+        <p>La pagina che hai cercato di aprire non esiste...<br>Ora, da bravo, torna <a id="back-button" href="javascript:history.back();">indietro</a>.</p>
+        <small>O qualcuno potrebbe farsi male...</small>
+    </body>
+</html>
