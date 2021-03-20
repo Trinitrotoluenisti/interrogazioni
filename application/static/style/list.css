@@ -10,6 +10,8 @@ li {
 
 .buttons { margin-left: auto; }
 
+.hide { visibility: hidden; }
+
 button {
     padding: 8px;
 

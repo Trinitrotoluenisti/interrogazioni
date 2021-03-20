@@ -4,19 +4,25 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style/list.css') }}">
 {% endblock %}
 
+{% block js %}
+    <script src="{{ url_for('static', filename='script/button.js') }}"></script>
+{% endblock %}
 
 {% block body %}
     <h1>{{ list['name'] }}</h1>
+    <button onclick="buttonClick();" class="show">Modifica</button>
+    <button onclick="buttonClick();" class="hide">Conferma</button>
 
     <ul>
         {% for element in list['order'] %}
             <li>
-                <input type='checkbox' disabled {{ 'checked' if element['checked'] }}>
+                <input type="checkbox" name="{{ element['id'] }}-checked" disabled {{ 'checked' if element['checked'] }}>
+                <input type="number" name="{{ element['id'] }}-order" id="{{ element['id'] }}-order" value="{{ list['order'].index(element) + 1 }}" hidden>
                 <span> {{ element['name'] }}</span>
 
                 <div class="buttons">
-                    <button>&#8593;</button>
-                    <button>&#8595;</button>
+                    <button class="hide">&#8593;</button>
+                    <button class="hide">&#8595;</button>
                 </div>
             </li>
         {% endfor %}
