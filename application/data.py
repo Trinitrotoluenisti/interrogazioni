@@ -1,4 +1,4 @@
-fstirom json import load, dump
+from json import load, dump
 from random import shuffle
 
 
