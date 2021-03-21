@@ -99,18 +99,49 @@ def new_list_page(is_admin=False):
 
     return redirect('/')
 
-@app.route('/lists/<int:lid>/check/<int:eid>')
+@app.route('/lists/<int:lid>/delete', methods=['POST'])
 @check_admin
-def update_list_page(lid, eid, is_admin=False):
+def delete_list_endpoint(lid, is_admin=False):
     if not is_admin:
         return redirect(f'/lists/{lid}'), 401
 
     try:
-        Data.update_list(lid, eid)
+        Data.delete_list(lid)
     except ValueError as e:
         return render_template('list.html', list=Data.get_list(lid), is_admin=is_admin, error=str(e))
 
-    return redirect(f'/lists/{lid}')
+    return redirect('/lists')
+
+@app.route('/lists/<int:lid>/update', methods=['POST'])
+@check_admin
+def update_list_endpoint(lid, is_admin=False):
+    if not is_admin:
+        return redirect('/'), 401
+
+    l = Data.get_list(lid)
+    if not l:
+        return handle_404(None)
+
+    data = dict(request.form)
+    new_elements = {i: e.replace('-order', '') for e, i in data.items() if e.endswith('-order')}
+    new_order = [0] * len(new_elements)
+
+    for index, element in new_elements.items():
+        new_order[int(index) - 1] = element
+
+    Data.reorder_list(lid, new_order)
+
+    changed = []
+    for element in l['order']:
+        if bool(element['checked']) != bool(f'{element["id"]}-checked' in data):
+            changed.append(element['id'])
+    try:
+        Data.reorder_list(lid, new_order)
+        Data.toggle_list(lid, changed)
+    except ValueError as e:
+        return render_template('list.html', list=l, is_admin=is_admin, error=str(e))
+
+    return redirect('/')
 
 @app.errorhandler(404)
 def handle_404(e):

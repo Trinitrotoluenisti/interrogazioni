@@ -1,4 +1,4 @@
-from json import load, dump
+fstirom json import load, dump
 from random import shuffle
 
 
@@ -36,6 +36,8 @@ class Data:
                 return dict(e)
 
     def get_element_dashboard(eid):
+        eid = str(eid)
+
         if not Data.get_element(eid):
             return None
 
@@ -91,6 +93,8 @@ class Data:
         Data.save()
 
     def delete_list(lid):
+        lid = str(lid)
+
         if not Data.get_list(lid):
             raise ValueError('La lista specificata non esiste')
 
@@ -102,7 +106,7 @@ class Data:
         if not l:
             raise ValueError('La lista specificata non esiste')
 
-        eids = list(map(str, eids))
+        eids = list(map(int, eids))
         oids = [o['id'] for o in l['order']]
         if not all([eid in oids for eid in eids]):
             raise ValueError('Uno o più studenti non sono in lista')
@@ -118,11 +122,11 @@ class Data:
             raise ValueError('La lista specificata non esiste')
 
         eids = list(map(str, eids))
-        if set(eids) != {e['id'] for e in l['order']} or len(eids) != len(l['order']):
+        if set(eids) != {str(e['id']) for e in l['order']} or len(eids) != len(l['order']):
             raise ValueError('Nel nuovo ordine mancano studenti o ce ne sono di nuovi')
 
         new_order = []
-        old_order = {e['id']: e for e in l['order']}
+        old_order = {str(e['id']): e for e in l['order']}
 
         for eid in eids:
             new_order.append(old_order[eid])

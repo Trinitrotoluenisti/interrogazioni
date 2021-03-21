@@ -14,12 +14,12 @@
     <h1>{{ list['name'] }}</h1>
 
     {% if is_admin %}
-        <form action="/list/{{ list['id'] }}/delete" method="POST">
+        <form action="/lists/{{ list['id'] }}/delete" method="POST" onsubmit="return confirmDeletion()">
             <input type="submit" class="hide" value="Elimina lista">
         </form>
     {% endif %}
 
-    <form action="/list/{{ list['id'] }}/update" method="POST">
+    <form action="/lists/{{ list['id'] }}/update" method="POST">
         {% if is_admin %}
             <button type="button" onclick="showForm();" class="show">Modifica</button>
             <input type="submit" class="hide" value="Conferma">

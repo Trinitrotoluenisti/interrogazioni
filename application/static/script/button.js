@@ -41,3 +41,7 @@ function moveDown(button) {
         next.children[2].value--;
     }
 }
+
+function confirmDeletion() {
+    return prompt('Scrivi "Sì, sono sicuro" per cancellare la lista') == "Sì, sono sicuro";
+}

@@ -8,6 +8,7 @@
         <meta lang="it">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="Pragma" content="no-cache">
 
         <!-- CSS -->
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
@@ -22,7 +23,7 @@
         <div id="page-title">Interrogazioni</div>
 
         {% if not index|default(false,false) %}
-            <a id="back-button" href="javascript:history.back()">Indietro</a>
+            <a id="back-button" href="javascript:history.back();">Indietro</a>
         {% endif %}
 
         {% block body %}{% endblock %}
