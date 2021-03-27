@@ -1,4 +1,5 @@
 from json import load, dump
+from copy import deepcopy
 from random import shuffle
 
 
@@ -22,10 +23,10 @@ class Data:
 
 
     def get_elements():
-        return list(Data.elements.values())
+        return deepcopy(list(Data.elements.values()))
 
     def get_element(eid):
-        return Data.elements.get(str(eid)).copy()
+        return deepcopy(Data.elements.get(str(eid)))
 
     def get_element_by_name(name):
         for e in Data.elements.values():
@@ -61,10 +62,10 @@ class Data:
 
 
     def get_lists():
-        return list(Data.lists.values())
+        return deepcopy(list(Data.lists.values()))
 
     def get_list(lid):
-        return Data.lists.get(str(lid)).copy()
+        return deepcopy(Data.lists.get(str(lid)))
 
     def get_list_by_name(name):
         for lid, l in Data.lists.items():
@@ -80,7 +81,10 @@ class Data:
         elif step > len(order) or step < 1:
             raise ValueError('Numero di interrogati non valido')
 
-        lid = str(max(map(int, Data.lists.keys())) + 1)
+        if Data.lists:
+            lid = str(max(map(int, Data.lists.keys())) + 1)
+        else:
+            lid = 1
 
         for o in order:
             o.update(checked=False)
