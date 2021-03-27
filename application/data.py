@@ -6,7 +6,6 @@ class Data:
     lists = {}
     elements = {}
 
-    # Save and load
 
     def load():
         with open('application/data.json') as f:
@@ -22,8 +21,6 @@ class Data:
             dump(data, f, indent=4)
 
 
-    # Elements
-
     def get_elements():
         return list(Data.elements.values())
 
@@ -36,7 +33,7 @@ class Data:
                 return dict(e)
 
     def get_element_dashboard(eid):
-        eid = str(eid)
+        eid = int(eid)
 
         if not Data.get_element(eid):
             return None
@@ -62,7 +59,6 @@ class Data:
 
         return dashboard
 
-    # Lists
 
     def get_lists():
         return list(Data.lists.values())
@@ -113,7 +109,7 @@ class Data:
 
         for oid, o in enumerate(l['order']):
             if o['id'] in eids:
-                Data.lists[str(lid)]['order'][oid]['checked'] = int(not o['checked'])
+                Data.lists[str(lid)]['order'][oid]['checked'] = not o['checked']
                 Data.save()
 
     def reorder_list(lid, eids):
@@ -121,12 +117,12 @@ class Data:
         if not l:
             raise ValueError('La lista specificata non esiste')
 
-        eids = list(map(str, eids))
-        if set(eids) != {str(e['id']) for e in l['order']} or len(eids) != len(l['order']):
+        eids = list(map(int, eids))
+        if set(eids) != {e['id'] for e in l['order']} or len(eids) != len(l['order']):
             raise ValueError('Nel nuovo ordine mancano studenti o ce ne sono di nuovi')
 
         new_order = []
-        old_order = {str(e['id']): e for e in l['order']}
+        old_order = {e['id']: e for e in l['order']}
 
         for eid in eids:
             new_order.append(old_order[eid])
