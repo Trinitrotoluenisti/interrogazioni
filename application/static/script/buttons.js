@@ -4,11 +4,11 @@ function showForm() {
     let inputs = document.getElementsByTagName("input");
 
     for (item of shown) {
-        item.style.visibility = "hidden";
+        item.style.display = "none";
     }
 
     for (item of hidden) {
-        item.style.visibility = "visible";
+        item.style.display = "inline";
     }
 
     for (input of inputs) {

@@ -38,28 +38,24 @@ a:hover {
     cursor: pointer;
 }
 
-form > input {
-    margin-bottom: 1vh;
-}
+form > input { margin-bottom: 1vh; }
 
 label {
     display: block;
+
     margin-bottom: .5vh;
 }
 
 input[type=text], input[type=number], input[type=password] {
-    margin-top: 2vh 0;
-    padding: 0.7vh;
+    padding: .7vh;
 
     border: none;
     border-radius: 3px;
 }
 
-input[type=submit] {
+input[type=submit], button {
     margin: 10px 0;
     padding: 8px 16px;
-
-    display: inline-block;
 
     border: 2px solid white;
     border-radius: 3px;
@@ -68,7 +64,6 @@ input[type=submit] {
     color: var(--background);
 
     text-align: center;
-    text-decoration: none;
     font-weight: bold;
 
     transition-duration: .2s;
@@ -77,7 +72,7 @@ input[type=submit] {
     cursor: pointer;
 }
 
-input[type=submit]:hover {
+input[type=submit]:hover, button:hover {
     background-color: var(--background);
     color: white;
 }
