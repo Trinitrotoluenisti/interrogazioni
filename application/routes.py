@@ -1,4 +1,4 @@
-from flask import render_template, request, make_response, redirect
+from flask import render_template, request, make_response, redirect, abort
 from functools import wraps
 from uuid import uuid4
 
@@ -69,7 +69,7 @@ def list_page(lid, is_admin=False):
     if (l := Data.get_list(lid)):
         return render_template('list.html', list=l, is_admin=is_admin)
     else:
-        return None, 404
+        abort(404)
 
 @app.route('/elements/<int:eid>')
 def element_page(eid):
@@ -77,7 +77,7 @@ def element_page(eid):
         dashboard = Data.get_element_dashboard(eid)
         return render_template('element.html', element=e, dashboard=dashboard)
     else:
-        return None, 404
+        abort(404)
 
 @app.route('/lists/new', methods=['GET', 'POST'])
 @check_admin
