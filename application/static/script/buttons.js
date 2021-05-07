@@ -25,8 +25,8 @@ function moveUp(button) {
 
     if (prev) {
         list.insertBefore(element, prev);
-        element.children[2].value--;
-        prev.children[2].value++;
+        element.children[1].value--;
+        prev.children[1].value++;
     }
 }
 
@@ -37,8 +37,8 @@ function moveDown(button) {
 
     if (next) {
         list.insertBefore(next, element);
-        element.children[2].value++;
-        next.children[2].value--;
+        element.children[1].value++;
+        next.children[1].value--;
     }
 }
 

@@ -129,8 +129,6 @@ def update_list_endpoint(lid, is_admin=False):
     for index, element in new_elements.items():
         new_order[int(index) - 1] = element
 
-    Data.reorder_list(lid, new_order)
-
     changed = []
     for element in l['order']:
         if bool(element['checked']) != bool(f'{element["id"]}-checked' in data):
