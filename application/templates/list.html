@@ -37,8 +37,10 @@
                         <input type="number" name="{{ element['id'] }}-order" id="{{ element['id'] }}-order" value="{{ list['order'].index(element) + 1 }}" hidden>
 
                         <div class="buttons">
+                            <button type="button" onclick="moveToTop(this);" class="hide arrow">&#8593;&#8593;</button>
                             <button type="button" onclick="moveUp(this);" class="hide arrow">&#8593;</button>
                             <button type="button" onclick="moveDown(this);" class="hide arrow">&#8595;</button>
+                            <button type="button" onclick="moveToBottom(this);" class="hide arrow">&#8595;&#8595;</button>
                         </div>
                     {% endif %}
                 </li>
