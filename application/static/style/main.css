@@ -1,8 +1,15 @@
 :root {
-    --background: #262626;
-    --main: #B3001B;
-/*  --main-alt: #255C99; */
-    --button: #EEEEEE;
+    --background: #282828;
+    --foreground: #ebdbb2;
+    --link: #a89983;
+
+    --red: #CC241D;
+    --green: #98971A;
+    --yellow: #D79921;
+    --blue: #458588;
+    --purple: #B16286;
+    --aqua: #689d6a;
+    --orange: #d65d0e;
 }
 
 html, body {
@@ -12,7 +19,7 @@ html, body {
     font-family: 'Roboto', sans-serif;
 
     background-color: var(--background);
-    color: white;
+    color: var(--foreground);
 }
 
 #page-title {
@@ -27,9 +34,7 @@ a {
 
     width: max-content;
 
-    color: white;
-
-    text-decoration: underline;
+    color: var(--link);
 }
 
 a:hover {
@@ -57,10 +62,10 @@ input[type=submit], button {
     margin: 10px 0;
     padding: 8px 16px;
 
-    border: 2px solid white;
+    border: 2px solid var(--foreground);
     border-radius: 3px;
 
-    background-color: white;
+    background-color: var(--foreground);
     color: var(--background);
 
     text-align: center;
@@ -74,5 +79,5 @@ input[type=submit], button {
 
 input[type=submit]:hover, button:hover {
     background-color: var(--background);
-    color: white;
+    color: var(--foreground);
 }

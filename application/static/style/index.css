@@ -15,16 +15,16 @@
     padding: 1vw;
 
     border-radius: 10px;
-
-    background-color: var(--main);
 }
 
 .subject {
-    font-weight: bold;
+    font-weight: bolder;
 
-    margin-bottom: .5vh;
+    padding-bottom: 1vh;
+    border-bottom: 1px solid;
+    margin-bottom: 2vh;
 
-    color: white;
+    color: var(--foreground);
 }
 
 .reserves { font-style: italic; }

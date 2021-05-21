@@ -4,12 +4,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style/index.css') }}">
 {% endblock %}
 
+{% block js %}
+    <script src="{{ url_for('static', filename='script/list_colors.js') }}" defer></script>
+{% endblock %}
 
 {% block body %}
     <a href="lists">Vedi interrogazioni per lista</a>
     <a href="elements">Vedi interrogazioni per studente</a>
 
-    <div class="categories">Prossime interrogazioni:</div>
+    <div class="categories">Prossime interrogazioni</div>
 
     <!-- Container of lists -->
     <div class="flex">

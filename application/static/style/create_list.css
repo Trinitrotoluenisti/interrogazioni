@@ -1,0 +1,4 @@
+input {
+    color: var(--background);
+    background-color: var(--foreground);
+}
