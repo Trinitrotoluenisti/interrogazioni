@@ -1,7 +1,7 @@
 function showForm() {
     let hidden = document.getElementsByClassName("hide");
     let shown = document.getElementsByClassName("show");
-    let inputs = document.getElementsByTagName("input");
+    let names = document.getElementsByClassName("name");
 
     for (item of shown) {
         item.style.display = "none";
@@ -11,10 +11,8 @@ function showForm() {
         item.style.display = "inline";
     }
 
-    for (input of inputs) {
-        if (input.type == "checkbox") {
-            input.disabled = false;
-        }
+    for (let i = 0; i < names.length; i++) {
+        names[i].setAttribute("onclick", "checkName(this)");
     }
 }
 
@@ -27,6 +25,20 @@ function moveUp(button) {
         list.insertBefore(element, prev);
         element.children[1].value--;
         prev.children[1].value++;
+    }
+}
+
+function checkName(name) {
+    let checkbox = name.previousElementSibling;
+
+    if (checkbox.hasAttribute("checked")) {
+        checkbox.removeAttribute("checked");
+
+        name.setAttribute("class", "name");
+    } else {
+        checkbox.setAttribute("checked", "");
+
+        name.setAttribute("class", "name-checked");
     }
 }
 

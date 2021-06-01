@@ -28,9 +28,9 @@
         <ul>
             {% for element in list['order'] %}
                 <li id="{{ element['id'] }}-div">
-                    <div>
-                        <input type="checkbox" name="{{ element['id'] }}-checked" disabled {{ 'checked' if element['checked'] }}>
-                        <span> {{ element['name'] }}</span>
+                    <div class="name-box">
+                        <input type="checkbox" class="name-checkbox" name="{{ element['id'] }}-checked" {{ 'checked' if element['checked'] }}>
+                        <span {% if is_admin and element['checked'] %} class="name name-admin-checked" {% elif is_admin %} class="name name-admin" {% elif element['checked'] %} class="name name-checked" {% endif %}>{{ element['name'] }}</span>
                     </div>
 
                     {% if is_admin %}

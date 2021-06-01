@@ -5,7 +5,37 @@ li {
 
     justify-content: space-between;
 
-    width: 85%;
+    margin-top: 2px;
+}
+
+form {
+    display: inline;
+}
+
+.name-box {
+    width: max-width;
+}
+
+.name-checkbox { display: none; }
+
+.name-admin:hover {
+    cursor: pointer;
+
+    text-decoration: line-through;
+
+    font-style: italic;
+}
+
+.name-checked { text-decoration: line-through; }
+
+.name-admin-checked { text-decoration: line-through; }
+
+.name-admin-checked:hover {
+    cursor: pointer;
+
+    text-decoration: none;
+
+    font-style: italic;
 }
 
 .hide { display: none; }
@@ -22,6 +52,7 @@ li {
     border-radius: 3px;
 }
 
-@media screen and (min-width: 1000px) {
-    li { width: 15%; }
+
+@media screen and (min-width: 370px) {
+    li { width: 350px; }
 }
