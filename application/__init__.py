@@ -1,8 +1,11 @@
 from flask import Flask
-from .data import Data
+from .data import load_data
 
 
 app = Flask(__name__)
-Data.load()
+app.url_map.strict_slashes = False
+
+load_data()
+
 
 from .routes import *

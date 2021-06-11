@@ -1,146 +1,225 @@
-from flask import render_template, request, make_response, redirect, abort
-from functools import wraps
+from flask import render_template as render_template_raw
+from flask import request, make_response, redirect, abort
 from uuid import uuid4
 
-from . import app, Data
-from .admin_password import ADMIN_PASSWORD
+from . import app
+from .data import *
 
 
-admin = {'password': ADMIN_PASSWORD, 'token': ''}
+# admin is the token of the admin currently logged in.
+# If nobody is logged in, admin is an empty string.
+admin = ''
+is_admin = lambda: ((request.cookies.get('token') == admin) and admin)
 
-
-def check_admin(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        is_admin = (request.cookies.get('token') == admin['token']) and admin['token']
-        return func(*args, **kwargs, is_admin=is_admin)
-    
-    return wrapper
+# Rewrites render_template in order to check every time if
+# the admin is logged in
+def render_template(*args, **kwargs):
+    return render_template_raw(*args, **kwargs, is_admin=is_admin())
 
 
 @app.route('/')
-@check_admin
-def index_page(is_admin=False):
-    dashboard = Data.get_lists_dashboard()
-    return render_template('index.html', dashboard=dashboard, index=True, is_admin=is_admin)
+def index_route():
+    # Prepares the dashboard
+    dashboard = [] 
+
+    # Selects all the lists
+    for l in lists:
+        queue = [o[0] for o in l.order if not o[1]]
+
+        # If there are some unchecked students
+        if queue:
+            # Divides them in one or two groups
+            data = {'index': l.index, 'name': l.name}
+            data['group_1'] = queue[:l.step]
+            data['group_2'] = (queue[l.step : 2*l.step+1]) if (len(queue) > l.step) else []
+
+            # Changes the ids to the names
+            data['group_1'] = list(map(lambda i: Student.by_index(i).name, data['group_1']))
+            data['group_2'] = list(map(lambda i: Student.by_index(i).name, data['group_2']))
+
+            dashboard.append(data)
+
+    # Returns index.html
+    return render_template('index.html', dashboard=dashboard, index=True)
 
 @app.route('/login', methods=['GET', 'POST'])
-def login_page():
+def login_route():
+    # If it's a GET requests it returns the html page
     if request.method == 'GET':
         return render_template('login.html')
-
+    
+    # Reads the given password from form and the real one from the file
     password = request.form.get('password')
-    if password == admin['password']:
-        admin['token'] = uuid4().hex
-        r = make_response(redirect('/'))
-        r.set_cookie('token', admin['token'])
-        return r
-    else:
+    with open('application/password.txt') as f:
+        admin_password = f.readlines()[0].strip()
+
+    # Ensures they're the same
+    if password != admin_password:
         return render_template('login.html', error='Credenziali invalide'), 401
 
+    # Generates and saves a token for it
+    global admin
+    admin = uuid4().hex
+
+    # Creates and returns the response
+    r = make_response(redirect('/'), 201)
+    r.set_cookie('token', admin)
+    return r
+
 @app.route('/logout')
-@check_admin
-def logout_page(is_admin=False):
+def logout_route():
+    global admin
+
+    # Creates a basic response
     r = make_response(redirect('/'))
 
-    if is_admin:
-        admin['token'] = ''
+    # If the request is from the admin, it logs it out
+    if is_admin():
+        r.status_code = 200
+        admin = ''
         r.set_cookie('token', '')
+    else:
+        r.status_code = 401
 
     return r
 
 @app.route('/lists')
-@app.route('/elements')
-def options_page():
+@app.route('/students')
+def showcase_route():
+    # Checks if it has to show lists or students
     path = str(request.url_rule)[1:]
 
-    if path == 'lists':
-        prompt = "Seleziona una lista"
-        options = Data.get_lists()
-    else:
-        prompt = "Seleziona uno studente"
-        options = Data.get_elements()
+    # Prepares the data
+    prompt = 'Seleziona un' + ('a lista' if (path == 'lists') else 'o studente')
+    elements = lists if (path == 'lists') else students
+    elements = sorted(elements, key=lambda e: e.index)
 
-    return render_template('options.html', prompt=prompt, options=options, path=path)
+    # Returns the showcase page
+    return render_template('showcase.html', prompt=prompt, elements=elements, path=path)
 
-@app.route('/lists/<int:lid>')
-@check_admin
-def list_page(lid, is_admin=False):
-    if (l := Data.get_list(lid)):
-        return render_template('list.html', list=l, is_admin=is_admin)
-    else:
-        abort(404)
+@app.route('/students/<int:index>')
+def student_route(index):
+    # Ensures the student exists
+    try:
+        s = Student.by_index(index)
+    except:
+        return abort(404)
 
-@app.route('/elements/<int:eid>')
-def element_page(eid):
-    if (e := Data.get_element(eid)):
-        dashboard = Data.get_element_dashboard(eid)
-        return render_template('element.html', element=e, dashboard=dashboard)
-    else:
-        abort(404)
+    # Prepares its dashboard
+    dashboard = {'group_1': [], 'group_2': [], 'group_3': [], 'done': []}
+
+    # Checks in all the lists
+    for l in lists:
+        queue = [o[0] for o in l.order if not o[1]]
+
+        # Checks if the student is checked in that list,
+        # otherwise it puts it in onw of the three groups
+        if not s.index in queue:
+            dashoard['done'].append([-1, l.name, l.index])
+        else:
+            i = queue.index(s.index)
+            group = '1' if i < l.step else ('2' if i < 2 * l.step + 1 else '3')
+            dashboard['group_' + group].append([i, l.name, l.index])
+
+    # Sorts the groups' content
+    for g in dashboard.values():
+        g.sort()
+
+    # Returns student.html
+    return render_template('student.html', student=s, dashboard=dashboard)
+
+@app.route('/lists/<int:index>')
+def list_route(index):
+    # Ensures the list exists
+    try:
+        l = List.by_index(index)
+    except:
+        return abort(404)
+
+    # Creates a dashboard with the students in the queue
+    dashboard = []
+    for position, s in enumerate(l.order):
+        dashboard.append([position, s[0], Student.by_index(s[0]).name, s[1]])
+
+    # Returns list.html
+    return render_template('list.html', list=l, dashboard=dashboard)
 
 @app.route('/lists/new', methods=['GET', 'POST'])
-@check_admin
-def new_list_page(is_admin=False):
-    if not is_admin:
+def new_list_route():
+    # If the user isn't an admin it returns the homepage
+    if not is_admin():
         return redirect('/'), 401
-    elif request.method == 'GET':
+
+    # If it's a GET request it returns create_list.html
+    if request.method == 'GET':
         return render_template('create_list.html')
 
+    # Collects data from the request
     data = dict(request.form)
-
-    if not 'name' in data or not 'step' in data:
-        return render_template('create_list.html', error='Dati insufficienti', **data)
     
+    # Tries to create a new list
     try:
-        Data.generate_list(data['name'], int(data['step']))
+        List(-1, data['name'], int(data['step']), [])
     except ValueError as e:
         return render_template('create_list.html', error=str(e), **data)
+    except KeyError:
+        return render_template('create_list.html', error='Dati insufficienti', **data)
 
-    return redirect('/')
+    return redirect('/'), 201
 
-@app.route('/lists/<int:lid>/delete', methods=['POST'])
-@check_admin
-def delete_list_endpoint(lid, is_admin=False):
-    if not is_admin:
+@app.route('/lists/<int:index>/delete', methods=['POST'])
+def delete_list_route(index):
+    # Ensures the user is an admin
+    if not is_admin():
         return redirect(f'/lists/{lid}'), 401
 
+    # Tries to delete the list
     try:
-        Data.delete_list(lid)
-    except ValueError as e:
-        return render_template('list.html', list=Data.get_list(lid), is_admin=is_admin, error=str(e))
+        List.by_index(index).delete()
+    except ValueError:
+        return redirect('/lists'), 400
 
-    return redirect('/lists')
+    return redirect('/lists'), 201
 
-@app.route('/lists/<int:lid>/update', methods=['POST'])
-@check_admin
-def update_list_endpoint(lid, is_admin=False):
-    if not is_admin:
+@app.route('/lists/<int:index>/update', methods=['POST'])
+def update_list_route(index):
+    # Ensures the user is an admin
+    if not is_admin():
         return redirect('/'), 401
 
-    l = Data.get_list(lid)
-    if not l:
-        return handle_404(None)
-
-    data = dict(request.form)
-    new_elements = {i: e.replace('-order', '') for e, i in data.items() if e.endswith('-order')}
-    new_order = [0] * len(new_elements)
-
-    for index, element in new_elements.items():
-        new_order[int(index) - 1] = element
-
-    changed = []
-    for element in l['order']:
-        if bool(element['checked']) != bool(f'{element["id"]}-checked' in data):
-            changed.append(element['id'])
+    # Ensures the list exists
     try:
-        Data.reorder_list(lid, new_order)
-        Data.toggle_list(lid, changed)
-    except ValueError as e:
-        return render_template('list.html', list=l, is_admin=is_admin, error=str(e))
+        l = List.by_index(index)
+    except:
+        return abort(404)
 
-    return redirect('/')
+    # Collects data from the request
+    data = dict(request.form)
+
+    try:
+        # Calculate the differences between the previous toggled
+        # and the new ones
+        checked = {s[0] for s in l.order if s[1]}
+        new_checked = {int(s.replace('-checked', '')) for s in data if s.endswith('-checked')}
+
+        # Updates them
+        l.toggle_students(checked ^ new_checked)
+    except ValueError as e:
+        return render_template('list.html', list=l, error=str(e))
+
+    try:
+        # Calculates the new order
+        new_order = {p: i.replace('-order', '') for i, p in data.items() if i.endswith('-order')}
+        new_order = [int(new_order[str(i+1)]) for i in range(len(new_order))]
+
+        # Updates it
+        l.change_order(new_order)
+    except ValueError as e:
+        return render_template('list.html', list=l, error=str(e))
+    
+    return redirect('.'), 201
 
 @app.errorhandler(404)
 def handle_404(e):
+    # Returns the error page
     return render_template('error.html')

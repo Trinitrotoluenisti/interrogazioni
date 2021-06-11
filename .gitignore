@@ -1,5 +1,6 @@
-application/admin_password.py
-application/data.json
+application/password.txt
+application/students.txt
+application/data.dat
 
 .direnv
 .envrc

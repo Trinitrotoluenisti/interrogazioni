@@ -10,7 +10,7 @@
 
 {% block body %}
     <a href="lists">Vedi interrogazioni per lista</a>
-    <a href="elements">Vedi interrogazioni per studente</a>
+    <a href="students">Vedi interrogazioni per studente</a>
 
     <div class="categories">Prossime interrogazioni</div>
 
@@ -21,13 +21,13 @@
             <div class="list">
                 <div class="subject">{{ list['name'] }}</div>
 
-                {% for element in list['first_group'] %}
+                {% for element in list['group_1'] %}
                     <div>{{ element }}</div>
                 {% endfor %}
 
                 <br>
 
-                {% for element in list['second_group'] %}
+                {% for element in list['group_2'] %}
                     <div class="reserves">{{ element }}</div>
                 {% endfor %}
             </div>

@@ -1,155 +1,162 @@
-from json import load, dump
-from copy import deepcopy
+from dataclasses import dataclass, field
+from pickle import load, dump
 from random import shuffle
 
 
-class Data:
-    lists = {}
-    elements = {}
+# Instances containers
+students = set()
+lists = set()
 
 
-    def load():
-        with open('application/data.json') as f:
-            data = load(f)
+@dataclass
+class Student:
+    index: int = field(init=False)
+    name: str
 
-        Data.lists = data['lists']
-        Data.elements = data['elements']
+    def __post_init__(self):
+        # Calculates the index
+        self.index = len(students)
 
-    def save():
-        data = {'lists': Data.lists, 'elements': Data.elements}
+        # Checks if the name is unique
+        if self.name in [s.name for s in students]:
+            raise ValueError('Esiste già uno studente con lo stesso nome')
 
-        with open('application/data.json', 'w') as f:
-            dump(data, f, indent=4)
+        # Appends the student to the container
+        students.add(self)
+        save_data()
 
+    @staticmethod
+    def by_index(index):
+        # Search for a student with that index
+        for s in students:
+            if s.index == index:
+                return s
 
-    def get_elements():
-        return deepcopy(list(Data.elements.values()))
+        # If there isn't anyone with that id it raises an error
+        raise ValueError('Studente non trovato')
 
-    def get_element(eid):
-        return deepcopy(Data.elements.get(str(eid)))
+    def __hash__(self):
+        return id(self)
 
-    def get_element_by_name(name):
-        for e in Data.elements.values():
-            if e['name'] == name:
-                return dict(e)
+@dataclass
+class List:
+    index: int
+    name: str
+    step: int
+    order: list
 
-    def get_element_dashboard(eid):
-        eid = int(eid)
+    def __post_init__(self):
+        # If the index is set to -1 it calculates a new one,
+        # otherwise it checks if it's valid
+        if self.index == -1:
+            self.index = 1 if (not len(lists)) else (max([l.index for l in lists]) + 1)
+        elif self.index < 0:
+            raise ValueError('Indice della lista non valido')
 
-        if not Data.get_element(eid):
-            return None
+        # Checks if the name is unique
+        if self.name in [l.name for l in lists]:
+            raise ValueError('Esiste già una lista con lo stesso nome')
 
-        dashboard = {'first': [], 'second': [], 'other': [], 'done': []}
+        # Checks if step is valid
+        if self.step < 1 or self.step > len(students):
+            raise ValueError('Step troppo grande/piccolo')
 
-        for l in Data.get_lists():
-            elements = [o['id'] for o in l['order'] if not o['checked']]
-
-            if not eid in elements:
-                dashboard['done'].append([0, l['name'], l['id']])
-            elif (i := elements.index(eid)) < l['step']:
-                dashboard['first'].append([i, l['name'], l['id']])
-            elif i < 2*l['step']+1:
-                dashboard['second'].append([i, l['name'], l['id']])
-            else:
-                dashboard['other'].append([i, l['name'], l['id']])
-
-        dashboard['first'].sort()
-        dashboard['second'].sort()
-        dashboard['other'].sort()
-        dashboard['done'].sort()
-
-        return dashboard
-
-
-    def get_lists():
-        return deepcopy(list(Data.lists.values()))
-
-    def get_list(lid):
-        return deepcopy(Data.lists.get(str(lid)))
-
-    def get_list_by_name(name):
-        for lid, l in Data.lists.items():
-            if l['name'] == name:
-                return Data.get_list(lid)
-
-    def generate_list(name, step):
-        order = Data.get_elements()
-        shuffle(order)
-
-        if Data.get_list_by_name(name):
-            raise ValueError('Nome già usato')
-        elif step > len(order) or step < 1:
-            raise ValueError('Numero di interrogati non valido')
-
-        if Data.lists:
-            lid = str(max(map(int, Data.lists.keys())) + 1)
+        # Creates an order if it isn't given
+        if not self.order:
+            self.order = [[i, False] for i in range(len(students))]
+            shuffle(self.order)
         else:
-            lid = 1
+            # If it's given ensures that it's valid
+            if len(self.order) != len(students):
+                raise ValueError('Ci sono troppi o troppi pochi studenti nella lista')
+            elif not all([len(o) == 2 for o in self.order]):
+                raise ValueError('Il formato dell\'ordine non è valido')
+            elif not all([o[0] in range(len(students)) for o in self.order]):
+                raise ValueError('Alcuni studenti della lista non esistono')
 
-        for o in order:
-            o.update(checked=False)
+        # Saves the list in the container
+        lists.add(self)
+        save_data()
 
-        Data.lists[lid] = {"name": name, "id": lid, "step": step, "order": order}
-        Data.save()
+    def toggle_students(self, toggled):
+        # Ensures that all the students exist
+        for student in toggled:
+            if student not in range(len(students)):
+                raise ValueError('Alcuni studenti della lista non esistono')
 
-    def delete_list(lid):
-        lid = str(lid)
+        # Toggles their values
+        for student in toggled:
+            for o in self.order:
+                if o[0] == student:
+                    o[1] = not o[1]
+                    continue
 
-        if not Data.get_list(lid):
-            raise ValueError('La lista specificata non esiste')
+        # Saves changes
+        save_data()
 
-        del Data.lists[lid]
-        Data.save()
+    def change_order(self, new_order):
+        # Checks if the new order has the same students of
+        # the previous one
+        if len(new_order) != len(self.order):
+            raise ValueError('Ci sono troppi o troppi pochi studenti nel nuovo ordine')
+        elif len(new_order) != len(set(new_order)):
+            raise ValueError('Alcuni studenti sono duplicati')
+        elif [no for no in new_order if no not in range(len(students))]:
+            raise ValueError('Alcuni studenti della lista non esistono')
 
-    def toggle_list(lid, eids):
-        l = Data.get_list(lid)
-        if not l:
-            raise ValueError('La lista specificata non esiste')
+        # Gets the students' values from the previous order
+        for i in range(len(new_order)):
+            for o in self.order:
+                if o[0] == new_order[i]:
+                    new_order[i] = [new_order[i], o[1]]
+                    break
 
-        eids = list(map(int, eids))
-        oids = [o['id'] for o in l['order']]
-        if not all([eid in oids for eid in eids]):
-            raise ValueError('Uno o più studenti non sono in lista')
+        # Saves the new one
+        self.order = new_order
 
-        for oid, o in enumerate(l['order']):
-            if o['id'] in eids:
-                Data.lists[str(lid)]['order'][oid]['checked'] = not o['checked']
-                Data.save()
+        # Saves changes
+        save_data()
 
-    def reorder_list(lid, eids):
-        l = Data.get_list(lid)
-        if not l:
-            raise ValueError('La lista specificata non esiste')
+    def delete(self):
+        lists.remove(self)
 
-        eids = list(map(int, eids))
-        if set(eids) != {e['id'] for e in l['order']} or len(eids) != len(l['order']):
-            raise ValueError('Nel nuovo ordine mancano studenti o ce ne sono di nuovi')
+        # Saves changes
+        save_data()
 
-        new_order = []
-        old_order = {e['id']: e for e in l['order']}
+    @staticmethod
+    def by_index(index):
+        # Search for a list with that index
+        for l in lists:
+            if l.index == index:
+                return l
 
-        for eid in eids:
-            new_order.append(old_order[eid])
+        # If there isn't anyone with that id it raises an error
+        raise ValueError('Lista non trovata')
 
-        Data.lists[str(lid)]['order'] = new_order
-        Data.save()
+    def __hash__(self):
+        return id(self)
 
-    def get_lists_dashboard():
-        dashboard = []
-        
-        for l in Data.get_lists():
-            step = l["step"]
-            elements = [e['name'] for e in l["order"] if not e['checked']]
 
-            if elements:
-                l = {'name': l['name'],
-                      'id': l['id'],
-                      'first_group': elements[:step],
-                      'second_group': []}
+def save_data():
+    global students, lists
 
-                if len(elements) > step:
-                    l['second_group'] = elements[step : 2*step+1]
+    # Exports data to data.dat
+    with open('application/data.dat', 'wb') as f:
+        dump([students, lists], f)
 
-                dashboard.append(l)
-        
-        return dashboard
+def load_data():
+    global students, lists
+
+    try:
+        # Imports data from data.dat
+        with open('application/data.dat', 'rb') as f:
+            students, lists = load(f)
+    except FileNotFoundError:
+        # If data.dat is not found it creates a new file by reading
+        # students' data from students.txt
+        with open('application/students.txt', 'r') as f:
+            for s in f.readlines():
+                Student(s.strip())
+
+        # And saves them for the next time
+        save_data()

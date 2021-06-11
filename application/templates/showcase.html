@@ -4,7 +4,7 @@
 {% block body %}
     <h1>{{ prompt }}</h1>
 
-    {% for o in options %}
-        <a href="{{ path }}/{{ o['id'] }}">{{ o['name'] }}</a>
+    {% for e in elements %}
+        <a href="{{ path }}/{{ e.index }}">{{ e.name }}</a>
     {% endfor %}
 {% endblock %}
