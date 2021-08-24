@@ -3,29 +3,11 @@ function showForm() {
     let shown = document.getElementsByClassName("show");
     let names = document.getElementsByClassName("name");
 
-    for (item of shown) {
-        item.style.display = "none";
-    }
+    for (item of shown) { item.style.display = "none"; }
 
-    for (item of hidden) {
-        item.style.display = "inline";
-    }
+    for (item of hidden) { item.style.display = "inline"; }
 
-    for (let i = 0; i < names.length; i++) {
-        names[i].setAttribute("onclick", "checkName(this)");
-    }
-}
-
-function moveUp(button) {
-    let element = button.parentNode.parentNode;
-    let list = element.parentNode;
-    let prev = element.previousElementSibling;
-
-    if (prev) {
-        list.insertBefore(element, prev);
-        element.children[1].value--;
-        prev.children[1].value++;
-    }
+    for (let i = 0; i < names.length; i++) { names[i].setAttribute("onclick", "checkName(this)"); }
 }
 
 function checkName(name) {
@@ -34,11 +16,17 @@ function checkName(name) {
     if (checkbox.hasAttribute("checked")) {
         checkbox.removeAttribute("checked");
 
-        name.setAttribute("class", "name");
+        let classString = name.getAttribute("class");
+        classString = classString.replace(" name-checked", "");
+
+        name.setAttribute("class", classString);
     } else {
         checkbox.setAttribute("checked", "");
 
-        name.setAttribute("class", "name-checked");
+        let classString = name.getAttribute("class");
+        classString += " name-checked";
+
+        name.setAttribute("class", classString);
     }
 }
 
@@ -49,11 +37,23 @@ function moveToTop(button) {
 
     while (prev) {
         list.insertBefore(element, prev);
-        prev.children[1].value++;
+        prev.children[1].children[0].value++;
         prev = element.previousElementSibling;
     }
 
-    element.children[1].value = 1;
+    element.children[1].children[0].value = 1;
+}
+
+function moveUp(button) {
+    let element = button.parentNode.parentNode;
+    let list = element.parentNode;
+    let prev = element.previousElementSibling;
+
+    if (prev) {
+        list.insertBefore(element, prev);
+        element.children[1].children[0].value--;
+        prev.children[1].children[0].value++;
+    }
 }
 
 function moveDown(button) {
@@ -63,8 +63,8 @@ function moveDown(button) {
 
     if (next) {
         list.insertBefore(next, element);
-        element.children[1].value++;
-        next.children[1].value--;
+        element.children[1].children[0].value++;
+        next.children[1].children[0].value--;
     }
 }
 
@@ -75,11 +75,11 @@ function moveToBottom(button) {
 
     while (next) {
         list.insertBefore(next, element);
-        next.children[1].value--;
+        next.children[1].children[0].value--;
         next = element.nextElementSibling;
     }
 
-    element.children[1].value = list.childElementCount;
+    element.children[1].children[0].value = list.childElementCount;
 }
 
 function confirmDeletion() {

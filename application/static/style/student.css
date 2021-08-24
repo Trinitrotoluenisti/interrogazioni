@@ -1,7 +1,3 @@
-li {
-    padding-bottom: .5vh;
-}
+li { padding-bottom: .5vh; }
 
-li a {
-    display: inline;
-}
+li a { display: inline; }

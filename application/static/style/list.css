@@ -1,41 +1,17 @@
-ul { padding: 0; }
+form { display: inline; }
 
-li {
-    display: flex;
+label { margin: 0; }
 
-    justify-content: space-between;
+.students-names-cells { padding-right: 1vw; }
 
-    margin-top: 2px;
-}
-
-form {
-    display: inline;
-}
-
-.name-box {
-    width: max-width;
-}
-
-.name-checkbox { display: none; }
-
-.name-admin:hover {
-    cursor: pointer;
-
-    text-decoration: line-through;
-
-    font-style: italic;
-}
+.name:hover { cursor: default; }
 
 .name-checked { text-decoration: line-through; }
 
-.name-admin-checked { text-decoration: line-through; }
-
-.name-admin-checked:hover {
-    cursor: pointer;
-
-    text-decoration: none;
-
+.name-admin:hover {
     font-style: italic;
+
+    cursor: pointer;
 }
 
 .hide { display: none; }
@@ -50,9 +26,4 @@ form {
 
     border: .1px solid;
     border-radius: 3px;
-}
-
-
-@media screen and (min-width: 370px) {
-    li { width: 350px; }
 }

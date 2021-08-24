@@ -25,27 +25,26 @@
             <input type="submit" class="hide" value="Conferma">
         {% endif %}
 
-        <ul>
+        <table>
             {% for student in dashboard %}
-                <li id="{{ student[1] }}-div">
-                    <div class="name-box">
-                        <input type="checkbox" class="name-checkbox" name="{{ student[1] }}-checked" {{ 'checked' if student[3] }}>
-                        <span {% if is_admin and student[3] %} class="name name-admin-checked" {% elif is_admin %} class="name name-admin" {% elif student[3] %} class="name name-checked" {% endif %}>{{ student[2] }}</span>
-
-                    </div>
+                <tr id="{{ student[1] }}-div">
+                    <td class="students-names-cells">
+                        <input type="checkbox" name="{{ student[1] }}-checked" {{ 'checked' if student[3] }} hidden>
+                        <span class="name {{ 'name-admin' if is_admin }} {{ 'name-checked' if student[3] }}">{{ student[2] }}</span>
+                    </td>
 
                     {% if is_admin %}
-                        <input type="number" name="{{ student[1] }}-order" id="{{ student[1] }}-order" value="{{ student[0] + 1 }}" hidden>
+                        <td>
+                            <input type="number" name="{{ student[1] }}-order" id="{{ student[1] }}-order" value="{{ student[0] + 1 }}" hidden>
 
-                        <div class="buttons">
                             <button type="button" onclick="moveToTop(this);" class="hide arrow">&#8593;&#8593;</button>
                             <button type="button" onclick="moveUp(this);" class="hide arrow">&#8593;</button>
                             <button type="button" onclick="moveDown(this);" class="hide arrow">&#8595;</button>
                             <button type="button" onclick="moveToBottom(this);" class="hide arrow">&#8595;&#8595;</button>
-                        </div>
+                        </td>
                     {% endif %}
-                </li>
+                </tr>
             {% endfor %}
-        </ul>
+        </table>
     </form>
 {% endblock %}

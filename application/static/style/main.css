@@ -12,9 +12,12 @@
     --orange: #d65d0e;
 }
 
-html, body {
-    height: auto;
-    width: auto;
+html {
+    /*
+    hmtl, body {
+        height: auto;
+        width: auto;
+    */
 
     font-family: 'Roboto', sans-serif;
 
