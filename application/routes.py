@@ -62,7 +62,7 @@ def login_route():
     admin = uuid4().hex
 
     # Creates and returns the response
-    r = make_response(redirect('/'), 201)
+    r = make_response(redirect('/'))
     r.set_cookie('token', admin)
     return r
 
@@ -70,18 +70,12 @@ def login_route():
 def logout_route():
     global admin
 
-    # Creates a basic response
-    r = make_response(redirect('/'))
-
     # If the request is from the admin, it logs it out
     if is_admin():
-        r.status_code = 200
         admin = ''
         r.set_cookie('token', '')
-    else:
-        r.status_code = 401
 
-    return r
+    return make_response(redirect('/'))
 
 @app.route('/lists')
 @app.route('/students')
@@ -148,7 +142,7 @@ def list_route(index):
 def new_list_route():
     # If the user isn't an admin it returns the homepage
     if not is_admin():
-        return redirect('/'), 401
+        return abort(401)
 
     # If it's a GET request it returns create_list.html
     if request.method == 'GET':
@@ -165,27 +159,27 @@ def new_list_route():
     except KeyError:
         return render_template('create_list.html', error='Dati insufficienti', **data)
 
-    return redirect('/'), 201
+    return redirect('/')
 
 @app.route('/lists/<int:index>/delete', methods=['POST'])
 def delete_list_route(index):
     # Ensures the user is an admin
     if not is_admin():
-        return redirect(f'/lists/{lid}'), 401
+        return abort(401)
 
     # Tries to delete the list
     try:
         List.by_index(index).delete()
     except ValueError:
-        return redirect('/lists'), 400
+        return abort(404)
 
-    return redirect('/lists'), 201
+    return redirect('/lists')
 
 @app.route('/lists/<int:index>/update', methods=['POST'])
 def update_list_route(index):
     # Ensures the user is an admin
     if not is_admin():
-        return redirect('/'), 401
+        return abort(401)
 
     # Ensures the list exists
     try:
@@ -217,7 +211,11 @@ def update_list_route(index):
     except ValueError as e:
         return render_template('list.html', list=l, error=str(e))
     
-    return redirect('.'), 201
+    return redirect('.')
+
+@app.errorhandler(401)
+def handle_401(e):
+    return redirect('/')
 
 @app.errorhandler(404)
 def handle_404(e):
