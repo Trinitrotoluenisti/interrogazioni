@@ -70,12 +70,14 @@ def login_route():
 def logout_route():
     global admin
 
+    r = make_response(redirect('/'))
+
     # If the request is from the admin, it logs it out
     if is_admin():
         admin = ''
         r.set_cookie('token', '')
 
-    return make_response(redirect('/'))
+    return r
 
 @app.route('/lists')
 @app.route('/students')
@@ -109,7 +111,7 @@ def student_route(index):
         # Checks if the student is checked in that list,
         # otherwise it puts it in onw of the three groups
         if not s.index in queue:
-            dashoard['done'].append([-1, l.name, l.index])
+            dashboard['done'].append([-1, l.name, l.index])
         else:
             i = queue.index(s.index)
             group = '1' if i < l.step else ('2' if i < 2 * l.step + 1 else '3')
