@@ -44,6 +44,7 @@ class List:
     name: str
     step: int
     order: list
+    ordered: bool
 
     def __post_init__(self):
         # If the index is set to -1 it calculates a new one,

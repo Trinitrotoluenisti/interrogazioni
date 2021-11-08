@@ -13,6 +13,10 @@
 {% block body %}
     <h1>{{ list.name }}</h1>
 
+    {% if not list.ordered %}
+        <h2>NB: l'ordine non conta</h2>
+    {% endif %}
+
     {% if is_admin %}
         <form action="/lists/{{ list.index }}/delete" method="POST" onsubmit="return confirmDeletion()">
             <input type="submit" class="hide" value="Elimina lista">

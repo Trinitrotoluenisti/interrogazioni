@@ -18,18 +18,22 @@
     <div class="flex">
         <!-- List -->
         {% for list in dashboard %}
-            <div class="list">
+            <div class="list" onclick="location.href = 'lists/{{ list['index'] }}'">
                 <div class="subject">{{ list['name'] }}</div>
 
-                {% for element in list['group_1'] %}
-                    <div>{{ element }}</div>
-                {% endfor %}
+                {% if list['ordered'] %}
+                    {% for element in list['group_1'] %}
+                        <div>{{ element }}</div>
+                    {% endfor %}
 
-                <br>
+                    <br>
 
-                {% for element in list['group_2'] %}
-                    <div class="reserves">{{ element }}</div>
-                {% endfor %}
+                    {% for element in list['group_2'] %}
+                        <div class="reserves">{{ element }}</div>
+                    {% endfor %}
+                {% else %}
+                    Lista non ordinata
+                {% endif %}
             </div>
         {% endfor %}
     </div>

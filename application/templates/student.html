@@ -9,7 +9,13 @@
     <h1>{{ student.name }}</h1>
 
     <ul>
-        {% for l in dashboard['group_1'] %}
+        {% for l in dashboard['unordered'] %}
+            <li>Devi fare l'interrogazione di <b><a href="/lists/{{ l[2] }}">{{ l[1] }}</a></b></li>
+        {% endfor %}
+
+        <br>
+
+        {% for l in dashboard['first'] %}
             {% if l[0] == 0 %}
                 <li>Sei il primo nella lista in <b><a href="/lists/{{ l[2] }}">{{ l[1] }}</a></b> <i>(Prossimo interrogato)</i></li>
             {% else %}
@@ -17,11 +23,11 @@
             {% endif %}
         {% endfor %}
 
-        {% for l in dashboard['group_2'] %}
+        {% for l in dashboard['second'] %}
             <li>Ci sono <b>{{ l[0] }}</b> persone davanti a te in <b><a href="/lists/{{ l[2] }}">{{ l[1] }}</a></b> <i>(Riserva)</i></li>
         {% endfor %}
 
-        {% for l in dashboard['group_3'] %}
+        {% for l in dashboard['other'] %}
             <li>Ci sono <b>{{ l[0] }}</b> persone davanti a te in <b><a href="/lists/{{ l[2] }}">{{ l[1] }}</a></b></li>
         {% endfor %}
 

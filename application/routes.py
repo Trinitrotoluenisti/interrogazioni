@@ -29,7 +29,7 @@ def index_route():
         # If there are some unchecked students
         if queue:
             # Divides them in one or two groups
-            data = {'index': l.index, 'name': l.name}
+            data = {'index': l.index, 'name': l.name, 'ordered': l.ordered}
             data['group_1'] = queue[:l.step]
             data['group_2'] = (queue[l.step : 2*l.step+1]) if (len(queue) > l.step) else []
 
@@ -38,6 +38,8 @@ def index_route():
             data['group_2'] = list(map(lambda i: Student.by_index(i).name, data['group_2']))
 
             dashboard.append(data)
+
+    dashboard.sort(key=lambda l: l['ordered'], reverse=True)
 
     # Returns index.html
     return render_template('index.html', dashboard=dashboard, index=True)
@@ -102,7 +104,7 @@ def student_route(index):
         return abort(404)
 
     # Prepares its dashboard
-    dashboard = {'group_1': [], 'group_2': [], 'group_3': [], 'done': []}
+    dashboard = {'unordered': [], 'first': [], 'second': [], 'other': [], 'done': []}
 
     # Checks in all the lists
     for l in lists:
@@ -112,10 +114,12 @@ def student_route(index):
         # otherwise it puts it in onw of the three groups
         if not s.index in queue:
             dashboard['done'].append([-1, l.name, l.index])
+        elif not l.ordered:
+            dashboard['unordered'].append([-1, l.name, l.index])
         else:
             i = queue.index(s.index)
-            group = '1' if i < l.step else ('2' if i < 2 * l.step + 1 else '3')
-            dashboard['group_' + group].append([i, l.name, l.index])
+            group = 'first' if i < l.step else ('second' if i < 2 * l.step + 1 else 'other')
+            dashboard[group].append([i, l.name, l.index])
 
     # Sorts the groups' content
     for g in dashboard.values():
@@ -155,7 +159,7 @@ def new_list_route():
     
     # Tries to create a new list
     try:
-        List(-1, data['name'], int(data['step']), [])
+        List(-1, data['name'], int(data['step']), [], 'ordered' in data)
     except ValueError as e:
         return render_template('create_list.html', error=str(e), **data)
     except KeyError:

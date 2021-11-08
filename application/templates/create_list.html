@@ -14,6 +14,9 @@
         <label for="step">Interrogati per volta</label>
         <input type="number" name="step" min="1" value="{{ step|default(3, false) }}" required>
 
+        <label for="ordered">Lista ordinata</label>
+        <input type="checkbox" name="ordered" checked>
+
         <br>
 
         <input type="submit" value="Crea">
